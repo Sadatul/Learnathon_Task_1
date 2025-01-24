@@ -5,7 +5,6 @@ import com.district12.backend.dtos.LogInRequest;
 import com.district12.backend.dtos.RegistrationRequest;
 import com.district12.backend.dtos.UserVerificationRequest;
 import com.district12.backend.entities.User;
-import com.district12.backend.exceptions.InternalServerErrorException;
 import com.district12.backend.repositories.UserRepository;
 import com.district12.backend.services.JwtTokenService;
 import com.district12.backend.services.UserRegistrationAndVerificationService;
@@ -15,6 +14,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/v1/auth")
@@ -56,11 +57,11 @@ public class AuthControllerV1 {
         }
         catch (JsonProcessingException e) {
             log.error("Error occurred while caching user details: {}", e.getMessage());
-            throw new InternalServerErrorException("Error occurred while caching user details");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error occurred while caching user details");
         }
         catch (Exception e) {
             log.error("Error occurred while sending email: {}", e.getMessage());
-            throw new InternalServerErrorException("Error occurred while caching user details");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error occurred while caching user details");
         }
         return ResponseEntity.ok().build();
     }

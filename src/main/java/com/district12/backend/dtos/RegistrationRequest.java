@@ -20,7 +20,6 @@ public record RegistrationRequest(
         @NotNull
         Role role,
 
-        @NotNull
         @Size(min = 11, max = 11, message = "Phone number must be 11 characters long.")
         String phoneNumber
 ) {

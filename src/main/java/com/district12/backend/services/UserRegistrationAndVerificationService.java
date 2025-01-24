@@ -3,14 +3,14 @@ package com.district12.backend.services;
 import com.district12.backend.dtos.RegistrationRequest;
 import com.district12.backend.dtos.UnverifiedUser;
 import com.district12.backend.entities.User;
-import com.district12.backend.exceptions.BadRequestRuntimeException;
-import com.district12.backend.exceptions.TimedOutException;
 import com.district12.backend.repositories.UserVerificationRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -51,11 +51,11 @@ public class UserRegistrationAndVerificationService {
         Optional<UnverifiedUser> unverifiedUser = userVerRepo.getUserVerificationInfoByEmail(email);
 
         if (unverifiedUser.isEmpty()) {
-            throw new TimedOutException("Your opt has timed out");
+            throw new ResponseStatusException(HttpStatus.REQUEST_TIMEOUT, "Your OTP has expired. Please try again");
         }
 
         if(!unverifiedUser.get().getOtp().equals(otp)){
-            throw new BadRequestRuntimeException("Your OTP doesn't match. Please try again");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Your OTP doesn't match. Please try again");
         }
         return unverifiedUser.get().getUser();
     }

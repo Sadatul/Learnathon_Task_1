@@ -1,0 +1,20 @@
+meta {
+  name: RegisterationRequest
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{host}}/v1/auth/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "fullName": "Adilur Rahman",
+    "email": "2005077@ugrad.cse.buet.ac.bd",
+    "password":"sadi@101",
+    "role": "USER"
+  }
+}

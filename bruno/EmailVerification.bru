@@ -1,0 +1,18 @@
+meta {
+  name: EmailVerification
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{host}}/v1/auth/verify
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "sadatulislamsadi@gmail.com",
+    "otp": "061545"
+  }
+}
