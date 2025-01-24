@@ -1,0 +1,15 @@
+meta {
+  name: Hello
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{host}}/v1/hello
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzZWxmIiwic3ViIjoiMSIsImF1ZCI6ImJhY2tlbmQiLCJzY3AiOiJVU0VSIiwiZXhwIjoxNzM3ODEzMDQ0LCJpYXQiOjE3Mzc3MjY2NDR9.tTzoLH7IfK8qh_jRE1SFZmUX058wnHil34ln3q68uN8
+}
