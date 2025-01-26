@@ -2,7 +2,7 @@ package com.district12.backend.repositories;
 
 import com.district12.backend.dtos.UnverifiedUser;
 import jakarta.annotation.PostConstruct;
-import org.springframework.context.annotation.Profile;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Repository
-@Profile("!prod")
+@ConditionalOnProperty(value = "spring.cache.type", havingValue = "none")
 public class UserVerificationRepositoryInMemoryImpl implements UserVerificationRepository {
 
     private Map<String, UnverifiedUser> userVerificationInfo;

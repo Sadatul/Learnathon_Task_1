@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 @Repository
 @RequiredArgsConstructor
-@Profile("prod")
+@ConditionalOnProperty(value = "spring.cache.type", havingValue = "redis")
 public class UserVerificationRepositoryRedisImpl implements UserVerificationRepository {
     private final RedisTemplate<String, String> userRedisTemplate;
     private final ObjectMapper objectMapper;
