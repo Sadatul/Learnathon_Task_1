@@ -7,11 +7,11 @@ import lombok.Setter;
 @Setter
 public class CartItemRequest {
 
-    private Integer productId;
+    private Long productId;
     private Integer quantity;
-    private Integer orderId;
+    private Long orderId;
 
-    CartItemRequest(Integer productId, Integer quantity, Integer orderId) {
+    CartItemRequest(Long productId, Integer quantity, Long orderId) {
         this.productId = productId;
         this.quantity = quantity;
         this.orderId = orderId;
