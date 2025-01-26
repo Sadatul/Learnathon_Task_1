@@ -41,4 +41,10 @@ public class OrderControllerV1 {
         return cartItemService.getCartItemsByOrderId(userOrder.getId());
     }
 
+    // PUT /order/cancel/101
+    @PutMapping("/order/cancel/{orderId}")
+    public boolean cancelOrderForUser(@PathVariable Long orderId) {
+        return orderService.cancelOrderForUser(orderId);
+    }
+
 }
