@@ -1,6 +1,8 @@
 package com.district12.backend.services;
 
 import com.district12.backend.entities.User;
+import com.district12.backend.enums.Role;
+import com.district12.backend.exceptions.UnauthorizedException;
 import com.district12.backend.repositories.UserRepository;
 import com.district12.backend.repositories.UserVerificationRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,5 +25,13 @@ public class UserService {
         return userRepository.findById(userId).orElseThrow(
                 () -> new UsernameNotFoundException("User not found")
         );
+    }
+
+    public User verifyAdminRoleById(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new UsernameNotFoundException("User not found"));
+        if (user.getRole() != Role.ADMIN)
+            throw new UnauthorizedException("User is not authorized to access this resource.");
+        return user;
     }
 }

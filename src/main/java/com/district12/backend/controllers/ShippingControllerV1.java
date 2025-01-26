@@ -9,10 +9,7 @@ import com.district12.backend.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,11 +25,24 @@ public class ShippingControllerV1 {
     // GET ship/get/ready-orders
     @GetMapping("/get/ready-orders/{userId}")
     public ResponseEntity<List<Order>> getAllReadyOrdersForAdmin(@PathVariable Long userId) {
-        User user = userService.getUserById(userId);
-        if (user.getRole() != Role.ADMIN) {
-            throw new UnauthorizedException("User is not authorized to access this resource.");
-        }
+        User user = userService.verifyAdminRoleById(userId);
         List<Order> confirmedOrders = shippingService.getAllReadyOrdersForAdmin(user);
         return ResponseEntity.ok(confirmedOrders);
+    }
+
+    // PUT ship/ready-orders/1
+    @PutMapping("/ready-orders/{userId}")
+    public ResponseEntity<List<Order>> shipAllReadyOrdersForAdmin(@PathVariable Long userId) {
+        userService.verifyAdminRoleById(userId);
+        List<Order> shippedOrders = shippingService.shipAllReadyOrdersForAdmin();
+        return ResponseEntity.ok(shippedOrders);
+    }
+
+    // PUT ship/ready-order/2
+    @PutMapping("/ready-order/{userId}/{orderId}")
+    public ResponseEntity<Order> shipOneReadyOrderForAdmin(@PathVariable Long userId, @PathVariable Long orderId) {
+        userService.verifyAdminRoleById(userId);
+        Order shippedOrder = shippingService.shipOneReadyOrderForAdmin(orderId);
+        return ResponseEntity.ok(shippedOrder);
     }
 }

@@ -19,5 +19,13 @@ public class ShippingService {
         return orderRepository.getAllReadyOrders();
     }
 
+    public List<Order> shipAllReadyOrdersForAdmin() {
+        return orderRepository.shipAllReadyOrders();
+    }
+
+    public Order shipOneReadyOrderForAdmin(Long orderId) {
+        return orderRepository.shipOneReadyOrderForAdmin(orderId);
+    }
+
 
 }
