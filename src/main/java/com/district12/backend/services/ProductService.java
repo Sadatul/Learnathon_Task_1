@@ -12,7 +12,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     public Product findById(Long id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found for the given user id"));
+                .orElseThrow(() -> new RuntimeException("Product not found for the given product id"));
     }
 
 }

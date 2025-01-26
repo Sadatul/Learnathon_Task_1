@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/cart")
@@ -35,7 +34,7 @@ public class CartItemControllerV1 {
         return ResponseEntity.ok(cartItems);
     }
 
-    // POST /item/add/101
+    // POST /item/add
     @PostMapping(path = "/item/add")
     public ResponseEntity<CartItem> createCartItemForUser(
             @Valid @RequestBody CartItemRequest cartItemRequest) {

@@ -5,6 +5,7 @@ import com.district12.backend.enums.OrderStatus;
 import com.district12.backend.enums.PaymentMethod;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class CheckoutRequest {
 
     private Long userId;
@@ -20,11 +22,5 @@ public class CheckoutRequest {
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
 
-    public CheckoutRequest(Long userId, List<Long> cartItemIds, Address address, PaymentMethod paymentMethod) {
-        this.userId = userId;
-        this.cartItemIds = cartItemIds;
-        this.address = address;
-        this.paymentMethod = paymentMethod;
-    }
 }
 
