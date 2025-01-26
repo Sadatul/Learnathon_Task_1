@@ -2,8 +2,10 @@ package com.district12.backend.repositories;
 
 import com.district12.backend.dtos.CartItemResponse;
 import com.district12.backend.entities.CartItem;
+import com.district12.backend.entities.Order;
 import com.district12.backend.entities.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -27,5 +29,10 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
             "JOIN ci.product p " +
             "WHERE ci.order.id = :orderId")
     List<CartItemResponse> findCartItemsByOrderId(@Param("orderId") Long orderId);
+
+    @Modifying
+    @Query("UPDATE CartItem ci SET ci.order = :newOrder WHERE ci.id IN :cartItemIds")
+    void updateOrderForCartItems(@Param("newOrder") Order newOrder, @Param("cartItemIds") List<Long> cartItemIds);
+
 
 }
