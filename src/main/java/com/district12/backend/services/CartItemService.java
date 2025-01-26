@@ -54,4 +54,8 @@ public class CartItemService {
         cartItemRepository.delete(existingCartItem);
     }
 
+    public List<CartItemResponse> getCartItemsByOrderId(Long orderId) {
+        return cartItemRepository.findCartItemsByOrderId(orderId);
+    }
+
 }
