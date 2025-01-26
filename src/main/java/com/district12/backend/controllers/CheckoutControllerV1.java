@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/checkout")
+@RequestMapping("/v1/checkout")
 @RequiredArgsConstructor
 @Slf4j
 public class CheckoutControllerV1 {
@@ -21,6 +21,7 @@ public class CheckoutControllerV1 {
     private final CartItemService cartItemService;
     private final UserService userService;
 
+    // POST /checkout/items
     @PostMapping(path = "/items")
     public void checkOutItemsForUser(
             @Valid @RequestBody CheckoutRequest checkoutRequest) {
