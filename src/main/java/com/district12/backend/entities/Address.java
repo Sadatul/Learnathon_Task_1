@@ -31,4 +31,13 @@ public class Address {
     @JoinColumn(nullable = false)
     @ToString.Exclude
     private User user;
+
+
+    public Address(String name, String address, String city, Long zipCode, User user) {
+        this.name = name;
+        this.address = address;
+        this.city = city;
+        this.zipCode = zipCode;
+        this.user = user;
+    }
 }
