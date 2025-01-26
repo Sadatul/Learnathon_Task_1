@@ -5,8 +5,10 @@ import com.district12.backend.dtos.CartItemResponse;
 import com.district12.backend.dtos.CartItemUpdateRequest;
 import com.district12.backend.entities.CartItem;
 import com.district12.backend.entities.Product;
+import com.district12.backend.entities.User;
 import com.district12.backend.services.CartItemService;
 import com.district12.backend.services.ProductService;
+import com.district12.backend.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,7 @@ public class CartItemControllerV1 {
 
     private final CartItemService cartItemService;
     private final ProductService productService;
+    private final UserService userService;
 
     // GET /items/user/101
     @GetMapping("/items/user/{userId}")
@@ -37,8 +40,10 @@ public class CartItemControllerV1 {
     public ResponseEntity<CartItem> createCartItemForUser(
             @Valid @RequestBody CartItemRequest cartItemRequest) {
 
+        User user = userService.getUserById(cartItemRequest.getUserId());
         Product cartItemProduct = productService.findById(cartItemRequest.getProductId());
-        CartItem savedCartItem = cartItemService.addCartItem(cartItemRequest.getUserId(), cartItemProduct, cartItemRequest.getQuantity());
+        CartItem savedCartItem = cartItemService.addCartItem(user, cartItemProduct, cartItemRequest.getQuantity());
+
         return ResponseEntity.ok(savedCartItem);
     }
 
@@ -49,6 +54,7 @@ public class CartItemControllerV1 {
 
         Product cartItemProduct = productService.findById(cartItemRequest.getProductId());
         CartItem updatedCartItem = cartItemService.updateCartItemQuantity(cartItemRequest.getUserId(), cartItemProduct, cartItemRequest.getNewQuantity());
+
         return ResponseEntity.ok(updatedCartItem);
     }
 

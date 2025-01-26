@@ -9,11 +9,13 @@ import java.util.List;
 @Setter
 public class CheckoutRequest {
 
-    private List<Integer> cartItemIds;
+    private Long userId;
+    private List<Long> cartItemIds;
     private String address;
     private String paymentMethod;
 
-    public CheckoutRequest(List<Integer> cartItemIds, String address, String paymentMethod) {
+    public CheckoutRequest(Long userId, List<Long> cartItemIds, String address, String paymentMethod) {
+        this.userId = userId;
         this.cartItemIds = cartItemIds;
         this.address = address;
         this.paymentMethod = paymentMethod;

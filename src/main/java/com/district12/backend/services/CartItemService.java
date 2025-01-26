@@ -6,33 +6,28 @@ import com.district12.backend.entities.Order;
 import com.district12.backend.entities.Product;
 import com.district12.backend.entities.User;
 import com.district12.backend.repositories.CartItemRepository;
-import com.district12.backend.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class CartItemService {
 
     private final CartItemRepository cartItemRepository;
-    private final UserRepository userRepository;
 
     public List<CartItemResponse> getCartItemsForUser(Long userId) {
         return cartItemRepository.findCartItemsByUserId(userId);
     }
 
-    public CartItem addCartItem(Long userId, Product product, Integer quantity) {
-        return cartItemRepository.findByUserIdAndProduct(userId, product)
+    public CartItem addCartItem(User user, Product product, Integer quantity) {
+        return cartItemRepository.findByUserIdAndProduct(user.getId(), product)
                 .map(existingCartItem -> increaseCartItemQuantity(existingCartItem, quantity))
-                .orElseGet(() -> createAndSaveCartItem(userId, product, quantity));
+                .orElseGet(() -> createAndSaveCartItem(user, product, quantity));
     }
 
-    private CartItem createAndSaveCartItem(Long userId, Product product, Integer quantity) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found for the given user ID"));
+    private CartItem createAndSaveCartItem(User user, Product product, Integer quantity) {
         CartItem newCartItem = new CartItem(user, product, quantity);
         return cartItemRepository.save(newCartItem);
     }
@@ -62,6 +57,5 @@ public class CartItemService {
     public void updateCartItemsOrderId(List<Long> cartItemIds, Order newOrder) {
         cartItemRepository.updateOrderForCartItems(newOrder, cartItemIds);
     }
-
 
 }
