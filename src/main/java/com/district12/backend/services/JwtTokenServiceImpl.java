@@ -2,6 +2,7 @@ package com.district12.backend.services;
 
 import com.district12.backend.dtos.JwtTokenResponse;
 import com.district12.backend.dtos.SecurityUser;
+import com.district12.backend.entities.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -30,6 +31,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     private String issuer;
 
     private final JwtEncoder jwtEncoder;
+    private final RefreshTokenService refreshTokenService;
 
     @Override
     public JwtTokenResponse generateToken(Authentication authentication) {
@@ -38,16 +40,35 @@ public class JwtTokenServiceImpl implements JwtTokenService {
                 .collect(Collectors.joining(" "));
         var securityUser = (SecurityUser) authentication.getPrincipal();
 
-        var claims = JwtClaimsSet.builder()
+        var claims = getClaimSet(securityUser.getId().toString(), scope);
+        JwsHeader header = getHeader();
+        String token = jwtEncoder.encode(JwtEncoderParameters.from(header, claims)).getTokenValue();
+        String refreshToken = refreshTokenService.getRefreshTokenForUser(securityUser.getId());
+        return new JwtTokenResponse(token, refreshToken, securityUser.getId());
+    }
+
+    @Override
+    public JwtTokenResponse generateToken(String refreshToken) {
+        User user = refreshTokenService.verifyToken(refreshToken);
+
+        var claims = getClaimSet(user.getId().toString(), user.getRole().toString());
+        JwsHeader header = getHeader();
+        String token = jwtEncoder.encode(JwtEncoderParameters.from(header, claims)).getTokenValue();
+        return new JwtTokenResponse(token, refreshToken, user.getId());
+    }
+
+    private JwtClaimsSet getClaimSet(String sub, String scope){
+        return  JwtClaimsSet.builder()
                 .issuer(issuer)
                 .issuedAt(Instant.now())
                 .audience(List.of(audiences))
                 .expiresAt(Instant.now().plusSeconds(timeout))
-                .subject(securityUser.getId().toString())
+                .subject(sub)
                 .claim("scp", scope)
                 .build();
-        JwsHeader header = JwsHeader.with(() -> "HS256").build();
-        String token = jwtEncoder.encode(JwtEncoderParameters.from(header, claims)).getTokenValue();
-        return new JwtTokenResponse(token, securityUser.getId());
+    }
+
+    private JwsHeader getHeader(){
+        return JwsHeader.with(() -> "HS256").build();
     }
 }

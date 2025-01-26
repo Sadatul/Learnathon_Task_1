@@ -18,10 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
@@ -71,6 +68,12 @@ public class AuthControllerV1 {
         User user = userRegVerService.verifyUser(request.email(), request.otp());
         userService.saveUser(user);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/refresh")
+    public ResponseEntity<JwtTokenResponse> refreshToken(@RequestParam String refreshToken){
+        var tokenResponse = jwtTokenService.generateToken(refreshToken);
+        return ResponseEntity.ok(tokenResponse);
     }
 
 }

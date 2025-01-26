@@ -5,4 +5,5 @@ import org.springframework.security.core.Authentication;
 
 public interface JwtTokenService {
     JwtTokenResponse generateToken(Authentication authentication);
+    JwtTokenResponse generateToken(String refreshToken);
 }

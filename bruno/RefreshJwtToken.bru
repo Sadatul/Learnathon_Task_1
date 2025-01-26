@@ -1,0 +1,15 @@
+meta {
+  name: RefreshJwtToken
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{host}}/v1/auth/refresh?refreshToken=14071581-b692-41b5-8d23-243306370202
+  body: none
+  auth: none
+}
+
+params:query {
+  refreshToken: 14071581-b692-41b5-8d23-243306370202
+}

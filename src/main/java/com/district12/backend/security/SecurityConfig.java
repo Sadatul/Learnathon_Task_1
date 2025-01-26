@@ -44,13 +44,8 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/v1/ROLE_ADMIN/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/v1/auth").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/v1/auth/register").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/v1/auth/verify").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/v1/healthy").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/v1/auth/refresh").permitAll()
+                        .requestMatchers("/v1/auth/**").permitAll()
                         .requestMatchers(SWAGGER_WHITELIST).permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

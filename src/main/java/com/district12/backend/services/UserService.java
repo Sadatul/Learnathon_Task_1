@@ -4,6 +4,7 @@ import com.district12.backend.entities.User;
 import com.district12.backend.repositories.UserRepository;
 import com.district12.backend.repositories.UserVerificationRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,4 +19,9 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(
+                () -> new UsernameNotFoundException("User not found")
+        );
+    }
 }
