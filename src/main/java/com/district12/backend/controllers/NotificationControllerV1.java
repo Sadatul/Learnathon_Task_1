@@ -18,7 +18,7 @@ public class NotificationControllerV1 {
 
     private final NotificationService notificationService;
 
-    // PUT /order/complete/101
+    // PUT /notification/order/complete/101
     @PutMapping("/order/complete/{orderId}")
     public ResponseEntity<Order> shipOneReadyOrderForAdmin(@PathVariable Long orderId) {
         Order completedOrder = notificationService.completeOrder(orderId);
