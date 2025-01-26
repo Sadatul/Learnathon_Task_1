@@ -3,6 +3,7 @@ package com.district12.backend.controllers;
 import com.district12.backend.entities.Order;
 import com.district12.backend.entities.User;
 import com.district12.backend.enums.Role;
+import com.district12.backend.exceptions.UnauthorizedException;
 import com.district12.backend.services.ShippingService;
 import com.district12.backend.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/ship")
@@ -27,10 +27,10 @@ public class ShippingControllerV1 {
 
     // GET ship/get/ready-orders
     @GetMapping("/get/ready-orders/{userId}")
-    public ResponseEntity<Object> getAllReadyOrdersForAdmin(@PathVariable Long userId) {
+    public ResponseEntity<List<Order>> getAllReadyOrdersForAdmin(@PathVariable Long userId) {
         User user = userService.getUserById(userId);
         if (user.getRole() != Role.ADMIN) {
-            throw new RuntimeException("User is not authorized to access this resource.");
+            throw new UnauthorizedException("User is not authorized to access this resource.");
         }
         List<Order> confirmedOrders = shippingService.getAllReadyOrdersForAdmin(user);
         return ResponseEntity.ok(confirmedOrders);
