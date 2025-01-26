@@ -28,7 +28,6 @@ public class CheckoutControllerV1 {
         User user = userService.getUserById(checkoutRequest.getUserId());
         Order savedOrder = orderService.createOrder(user, checkoutRequest.getPaymentMethod());
         cartItemService.updateCartItemsOrderId(checkoutRequest.getCartItemIds(), savedOrder);
-
     }
 
 }
