@@ -24,17 +24,28 @@ public class CartItemService {
     }
 
     public CartItem addCartItem(Long userId, Product product, Integer quantity) {
-        Optional<CartItem> existingCartItem = cartItemRepository.findByUserIdAndProduct(userId, product);
-        if (existingCartItem.isPresent()) {
-            existingCartItem.get().setQuantity(existingCartItem.get().getQuantity() + quantity);
-            return cartItemRepository.save(existingCartItem.get());
-        }
-        else {
-            User existingUser = userRepository.findById(userId)
-                    .orElseThrow(() -> new RuntimeException("User not found for the given user id"));
-            CartItem newCartItem = new CartItem(existingUser, product, quantity);
-            return cartItemRepository.save(newCartItem);
-        }
+        return cartItemRepository.findByUserIdAndProduct(userId, product)
+                .map(existingCartItem -> increaseCartItemQuantity(existingCartItem, quantity))
+                .orElseGet(() -> createAndSaveCartItem(userId, product, quantity));
+    }
+
+    private CartItem createAndSaveCartItem(Long userId, Product product, Integer quantity) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found for the given user ID"));
+        CartItem newCartItem = new CartItem(user, product, quantity);
+        return cartItemRepository.save(newCartItem);
+    }
+
+    private CartItem increaseCartItemQuantity(CartItem cartItem, Integer quantity) {
+        cartItem.setQuantity(cartItem.getQuantity() + quantity);
+        return cartItemRepository.save(cartItem);
+    }
+
+    public CartItem updateCartItemQuantity(Long userId, Product product, Integer quantity) {
+        CartItem existingCartItem = cartItemRepository.findByUserIdAndProduct(userId, product)
+                .orElseThrow(() -> new RuntimeException("CartItem not found for the given user and product"));
+        existingCartItem.setQuantity(quantity);
+        return cartItemRepository.save(existingCartItem);
     }
 
 }

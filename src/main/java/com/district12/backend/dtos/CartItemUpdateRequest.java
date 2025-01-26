@@ -7,10 +7,10 @@ import lombok.Setter;
 @Setter
 public class CartItemUpdateRequest {
 
-    private Integer productId;
+    private Long productId;
     private Integer newQuantity;
 
-    public CartItemUpdateRequest(Integer productId, Integer newQuantity) {
+    public CartItemUpdateRequest(Long productId, Integer newQuantity) {
         this.productId = productId;
         this.newQuantity = newQuantity;
     }

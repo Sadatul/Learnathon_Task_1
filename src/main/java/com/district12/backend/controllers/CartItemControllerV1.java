@@ -2,6 +2,7 @@ package com.district12.backend.controllers;
 
 import com.district12.backend.dtos.CartItemRequest;
 import com.district12.backend.dtos.CartItemResponse;
+import com.district12.backend.dtos.CartItemUpdateRequest;
 import com.district12.backend.entities.CartItem;
 import com.district12.backend.entities.Product;
 import com.district12.backend.services.CartItemService;
@@ -11,9 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -34,25 +33,25 @@ public class CartItemControllerV1 {
 
     // POST /item/add/101
     @PostMapping(path = "/item/add/{userId}")
-    public ResponseEntity<Object> createCartItemForUser(
+    public ResponseEntity<CartItem> createCartItemForUser(
             @PathVariable Long userId,
             @Valid @RequestBody CartItemRequest cartItemRequest) {
 
         Product cartItemProduct = productService.findById(cartItemRequest.getProductId());
 
-        CartItem savedCartItem = cartItemService.addCartItem(
-                userId,
-                cartItemProduct,
-                cartItemRequest.getQuantity()
-        );
+        CartItem savedCartItem = cartItemService.addCartItem(userId, cartItemProduct, cartItemRequest.getQuantity());
+        return ResponseEntity.ok(savedCartItem);
+    }
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{userId}")
-                .buildAndExpand(savedCartItem.getId())
-                .toUri();
+    // PUT /item/update/quantity/101
+    @PutMapping(path = "/item/update/quantity/{userId}")
+    public ResponseEntity<CartItem> updateCartItemQuantityForUser(
+            @PathVariable Long userId,
+            @Valid @RequestBody CartItemUpdateRequest cartItemRequest) {
 
-        return ResponseEntity.created(location).build();
+        Product cartItemProduct = productService.findById(cartItemRequest.getProductId());
+        CartItem updatedCartItem = cartItemService.updateCartItemQuantity(userId, cartItemProduct, cartItemRequest.getNewQuantity());
+        return ResponseEntity.ok(updatedCartItem);
     }
 
 }
