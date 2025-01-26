@@ -1,15 +1,13 @@
 package com.district12.backend.controllers;
 
+import com.district12.backend.dtos.CartItemResponse;
 import com.district12.backend.entities.Order;
 import com.district12.backend.services.CartItemService;
 import com.district12.backend.services.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -34,6 +32,13 @@ public class OrderControllerV1 {
     public ResponseEntity<List<Order>> getAllPastOrdersForUser(@PathVariable Long userId) {
         List<Order> orders = orderService.getPastOrdersForUser(userId);
         return ResponseEntity.ok(orders);
+    }
+
+    // GET /order/details/101
+    @GetMapping("/items/order/details/{orderId}")
+    public List<CartItemResponse> getOrderDetailsForUser(@PathVariable Long orderId) {
+        Order userOrder = orderService.getOrderById(orderId);
+        return cartItemService.getCartItemsByOrderId(userOrder.getId());
     }
 
 }
