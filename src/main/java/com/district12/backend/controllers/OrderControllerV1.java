@@ -20,31 +20,37 @@ public class OrderControllerV1 {
     private final OrderService orderService;
     private final CartItemService cartItemService;
 
-    // GET /orders/user/101
-    @GetMapping("/items/orders/{userId}")
+    // GET /order/all/101
+    @GetMapping("/all/{userId}")
     public ResponseEntity<List<Order>> getAllOrdersForUser(@PathVariable Long userId) {
         List<Order> orders = orderService.getOrdersForUser(userId);
         return ResponseEntity.ok(orders);
     }
 
-    // GET /orders/past/101
-    @GetMapping("/items/orders/past/{userId}")
+    // GET /order/past/101
+    @GetMapping("/past/{userId}")
     public ResponseEntity<List<Order>> getAllPastOrdersForUser(@PathVariable Long userId) {
         List<Order> orders = orderService.getPastOrdersForUser(userId);
         return ResponseEntity.ok(orders);
     }
 
     // GET /order/details/101
-    @GetMapping("/items/order/details/{orderId}")
+    @GetMapping("/details/{orderId}")
     public List<CartItemResponse> getOrderDetailsForUser(@PathVariable Long orderId) {
         Order userOrder = orderService.getOrderById(orderId);
         return cartItemService.getCartItemsByOrderId(userOrder.getId());
     }
 
     // PUT /order/cancel/101
-    @PutMapping("/order/cancel/{orderId}")
+    @PutMapping("/cancel/{orderId}")
     public boolean cancelOrderForUser(@PathVariable Long orderId) {
         return orderService.cancelOrderForUser(orderId);
+    }
+
+    // PUT /order/confirm/101
+    @PutMapping("/confirm/{orderId}")
+    public boolean confirmOrderForUser(@PathVariable Long orderId) {
+        return orderService.confirmOrderForUser(orderId);
     }
 
 }
