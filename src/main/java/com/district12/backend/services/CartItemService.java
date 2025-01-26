@@ -48,4 +48,10 @@ public class CartItemService {
         return cartItemRepository.save(existingCartItem);
     }
 
+    public void deleteCartItem(Long userId, Product product) {
+        CartItem existingCartItem = cartItemRepository.findByUserIdAndProduct(userId, product)
+                .orElseThrow(() -> new RuntimeException("CartItem not found for the given user and product"));
+        cartItemRepository.delete(existingCartItem);
+    }
+
 }

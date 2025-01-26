@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/cart")
@@ -32,26 +33,32 @@ public class CartItemControllerV1 {
     }
 
     // POST /item/add/101
-    @PostMapping(path = "/item/add/{userId}")
+    @PostMapping(path = "/item/add")
     public ResponseEntity<CartItem> createCartItemForUser(
-            @PathVariable Long userId,
             @Valid @RequestBody CartItemRequest cartItemRequest) {
 
         Product cartItemProduct = productService.findById(cartItemRequest.getProductId());
-
-        CartItem savedCartItem = cartItemService.addCartItem(userId, cartItemProduct, cartItemRequest.getQuantity());
+        CartItem savedCartItem = cartItemService.addCartItem(cartItemRequest.getUserId(), cartItemProduct, cartItemRequest.getQuantity());
         return ResponseEntity.ok(savedCartItem);
     }
 
-    // PUT /item/update/quantity/101
-    @PutMapping(path = "/item/update/quantity/{userId}")
+    // PUT /item/update/quantity
+    @PutMapping(path = "/item/update/quantity")
     public ResponseEntity<CartItem> updateCartItemQuantityForUser(
-            @PathVariable Long userId,
             @Valid @RequestBody CartItemUpdateRequest cartItemRequest) {
 
         Product cartItemProduct = productService.findById(cartItemRequest.getProductId());
-        CartItem updatedCartItem = cartItemService.updateCartItemQuantity(userId, cartItemProduct, cartItemRequest.getNewQuantity());
+        CartItem updatedCartItem = cartItemService.updateCartItemQuantity(cartItemRequest.getUserId(), cartItemProduct, cartItemRequest.getNewQuantity());
         return ResponseEntity.ok(updatedCartItem);
+    }
+
+    // DELETE /item/delete
+    @DeleteMapping(path = "/item/delete")
+    public void deleteCartItemForUser(
+            @Valid @RequestBody CartItemUpdateRequest cartItemRequest) {
+
+        Product cartItemProduct = productService.findById(cartItemRequest.getProductId());
+        cartItemService.deleteCartItem(cartItemRequest.getUserId(), cartItemProduct);
     }
 
 }
