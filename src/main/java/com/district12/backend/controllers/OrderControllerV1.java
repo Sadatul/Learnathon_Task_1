@@ -1,6 +1,7 @@
 package com.district12.backend.controllers;
 
 import com.district12.backend.dtos.CartItemResponse;
+import com.district12.backend.dtos.OrderDetailsResponse;
 import com.district12.backend.dtos.OrderResponse;
 import com.district12.backend.entities.Order;
 import com.district12.backend.services.CartItemService;
@@ -38,9 +39,12 @@ public class OrderControllerV1 {
 
     // GET /order/details/101
     @GetMapping("/details/{orderId}")
-    public List<CartItemResponse> getOrderDetailsForUser(@PathVariable Long orderId) {
+    public ResponseEntity<OrderDetailsResponse> getOrderDetailsForUser(@PathVariable Long orderId) {
         Order userOrder = orderService.getOrderById(SecurityUtils.getOwnerID(), orderId);
-        return cartItemService.getCartItemsByOrderId(userOrder.getId());
+        List<CartItemResponse> cartItemResponses = cartItemService.getCartItemsByOrderId(userOrder.getId());
+
+        OrderDetailsResponse orderDetailsResponse = orderService.createOrderDetailsResponseForUser(userOrder, cartItemResponses);
+        return ResponseEntity.ok(orderDetailsResponse);
     }
 
     // PUT /order/cancel/101

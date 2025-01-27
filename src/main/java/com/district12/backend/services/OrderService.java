@@ -1,5 +1,7 @@
 package com.district12.backend.services;
 
+import com.district12.backend.dtos.CartItemResponse;
+import com.district12.backend.dtos.OrderDetailsResponse;
 import com.district12.backend.dtos.OrderResponse;
 import com.district12.backend.entities.Order;
 import com.district12.backend.entities.User;
@@ -7,6 +9,7 @@ import com.district12.backend.enums.OrderStatus;
 import com.district12.backend.enums.PaymentMethod;
 import com.district12.backend.exceptions.UnauthorizedException;
 import com.district12.backend.repositories.OrderRepository;
+import com.district12.backend.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +27,11 @@ public class OrderService {
 
     public List<OrderResponse> getPastOrdersForUser(Long userId) {
         return orderRepository.findPastOrdersByUserId(userId);
+    }
+
+    public OrderDetailsResponse createOrderDetailsResponseForUser(Order order, List<CartItemResponse> cartItemResponses) {
+        OrderResponse orderResponse = new OrderResponse(order.getId(), order.getUser().getId(), order.getTimestamp(), order.getStatus());
+        return new OrderDetailsResponse(cartItemResponses, orderResponse);
     }
 
     public Order createOrder(User user, PaymentMethod paymentMethod) {
