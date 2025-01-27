@@ -9,6 +9,7 @@ import com.district12.backend.entities.User;
 import com.district12.backend.services.CartItemService;
 import com.district12.backend.services.ProductService;
 import com.district12.backend.services.UserService;
+import com.district12.backend.utils.SecurityUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +40,8 @@ public class CartItemControllerV1 {
     public ResponseEntity<CartItemResponse> createCartItemForUser(
             @Valid @RequestBody CartItemRequest cartItemRequest) {
 
-        User user = userService.getUserById(cartItemRequest.getUserId());
+        User user = userService.getUserById(SecurityUtils.getOwnerID());
+
         Product cartItemProduct = productService.findById(cartItemRequest.getProductId());
         CartItem savedCartItem = cartItemService.addCartItem(user, cartItemProduct, cartItemRequest.getQuantity());
 
@@ -56,12 +58,13 @@ public class CartItemControllerV1 {
             @Valid @RequestBody CartItemUpdateRequest cartItemRequest) {
 
         Product cartItemProduct = productService.findById(cartItemRequest.getProductId());
-        CartItem updatedCartItem = cartItemService.updateCartItemQuantity(cartItemRequest.getUserId(), cartItemProduct, cartItemRequest.getNewQuantity());
+        CartItem updatedCartItem = cartItemService.updateCartItemQuantity(
+                SecurityUtils.getOwnerID(),
+                cartItemProduct, cartItemRequest.getNewQuantity());
 
         CartItemResponse updatedCartItemResponse = new CartItemResponse(
                 cartItemProduct.getId(), cartItemProduct.getName(),
-                cartItemProduct.getDescription(), updatedCartItem.getQuantity()
-        );
+                cartItemProduct.getDescription(), updatedCartItem.getQuantity());
         return ResponseEntity.ok(updatedCartItemResponse);
     }
 
@@ -71,7 +74,7 @@ public class CartItemControllerV1 {
             @Valid @RequestBody CartItemUpdateRequest cartItemRequest) {
 
         Product cartItemProduct = productService.findById(cartItemRequest.getProductId());
-        cartItemService.deleteCartItem(cartItemRequest.getUserId(), cartItemProduct);
+        cartItemService.deleteCartItem(SecurityUtils.getOwnerID(), cartItemProduct);
     }
 
 }
