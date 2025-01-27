@@ -9,7 +9,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CartItemUpdateRequest {
 
-    private Long cartItemId;
     private Integer newQuantity;
 
 }

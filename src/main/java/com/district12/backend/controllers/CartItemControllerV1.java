@@ -14,7 +14,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -28,14 +30,14 @@ public class CartItemControllerV1 {
     private final UserService userService;
 
     // GET /items/user/101
-    @GetMapping("/items/user")
+    @GetMapping("/items")
     public ResponseEntity<List<CartItemResponse>> getCartItems() {
         List<CartItemResponse> cartItems = cartItemService.getCartItemsForUser(SecurityUtils.getOwnerID());
         return ResponseEntity.ok(cartItems);
     }
 
     // POST /item/add
-    @PostMapping(path = "/item/add")
+    @PostMapping(path = "/item")
     public ResponseEntity<CartItemResponse> createCartItemForUser(
             @Valid @RequestBody CartItemRequest cartItemRequest) {
 
@@ -44,26 +46,30 @@ public class CartItemControllerV1 {
         CartItemResponse savedCartItemResponse = cartItemService.addCartItem(
                 user, cartItemProduct, cartItemRequest.getQuantity());
 
-        return ResponseEntity.ok(savedCartItemResponse);
+        URI savedCartItemUri = ServletUriComponentsBuilder.fromCurrentRequestUri()
+                .path("/{id}").buildAndExpand(savedCartItemResponse.getCartItemId()).toUri();
+        return ResponseEntity.created(savedCartItemUri).body(savedCartItemResponse);
     }
 
-    // PUT /item/update/quantity
-    @PutMapping(path = "/item/update/quantity")
+    // PUT /item/update/quantity/2
+    @PutMapping(path = "/items/{cartItemId}")
     public ResponseEntity<CartItemResponse> updateCartItemQuantityForUser(
+            @PathVariable Long cartItemId,
             @Valid @RequestBody CartItemUpdateRequest cartItemRequest) {
 
         CartItemResponse updatedCartItemResponse = cartItemService.updateCartItemQuantity(
                 SecurityUtils.getOwnerID(),
-                cartItemRequest.getCartItemId(), cartItemRequest.getNewQuantity());
+                cartItemId, cartItemRequest.getNewQuantity());
 
         return ResponseEntity.ok(updatedCartItemResponse);
     }
 
     // DELETE /item/delete/2
     @DeleteMapping(path = "/item/delete/{cartItemId}")
-    public void deleteCartItemForUser(
+    public ResponseEntity<Void> deleteCartItemForUser(
             @PathVariable Long cartItemId) {
         cartItemService.deleteCartItem(SecurityUtils.getOwnerID(), cartItemId);
+        return ResponseEntity.noContent().build();
     }
 
 }
