@@ -1,11 +1,11 @@
 meta {
-  name: AddCartItem
+  name: CheckoutItems
   type: http
-  seq: 9
+  seq: 1
 }
 
 post {
-  url: http://localhost:8080/v1/cart/item/add
+  url: http://localhost:8080/v1/checkout/items
   body: json
   auth: bearer
 }
@@ -16,7 +16,8 @@ auth:bearer {
 
 body:json {
   {
-    "productId": 1,
-    "quantity" : 4
+    "cartItemIds" : [2, 4],
+    "addressId" : 1,
+    "paymentMethod" : "ONLINE_PAYMENT"
   }
 }

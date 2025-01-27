@@ -1,12 +1,14 @@
 package com.district12.backend.services;
 
 import com.district12.backend.dtos.CartItemResponse;
+import com.district12.backend.dtos.OrderResponse;
 import com.district12.backend.entities.CartItem;
 import com.district12.backend.entities.Order;
 import com.district12.backend.entities.Product;
 import com.district12.backend.entities.User;
 import com.district12.backend.exceptions.UnauthorizedException;
 import com.district12.backend.repositories.CartItemRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -69,6 +71,20 @@ public class CartItemService {
         return cartItemRepository.findCartItemsByOrderId(orderId);
     }
 
+    public void doAllCartItemsBelongToUser(List<Long> cartItemIds, Long userId) {
+        boolean allBelongToUser = cartItemRepository.doAllCartItemsBelongToUser(
+                cartItemIds.size(), cartItemIds, userId);
+        if (!allBelongToUser)
+            throw new IllegalArgumentException("One or more cart item(s) do not belong to the user associated with the order.");
+    }
+
+    public void isAnyCartItemInAnotherOrder(List<Long> cartItemIds) {
+        boolean isInAnotherOrder = cartItemRepository.isAnyCartItemInAnotherOrder(cartItemIds);
+        if (isInAnotherOrder)
+            throw new IllegalArgumentException("One or more cart item(s) is already in another order.");
+    }
+
+    @Transactional
     public void updateCartItemsOrderId(List<Long> cartItemIds, Order newOrder) {
         cartItemRepository.updateOrderForCartItems(newOrder, cartItemIds);
     }

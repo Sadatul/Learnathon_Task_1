@@ -17,8 +17,7 @@ import java.util.List;
 public class CheckoutRequest {
 
     private List<Long> cartItemIds;
-    private Address address;
-
+    private Long addressId;
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
 
