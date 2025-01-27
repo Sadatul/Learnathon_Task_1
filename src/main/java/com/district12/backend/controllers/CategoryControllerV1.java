@@ -22,7 +22,7 @@ public class CategoryControllerV1 {
     private final CategoryService categoryService;
 
     @PutMapping("/add")
-//    @PreAuthorize("hasAuthority(SCOPE_ADMIN)")
+    @PreAuthorize("hasAuthority(T(com.district12.backend.enums.Role).ADMIN.value)")
     public ResponseEntity<Void> addCategory(@RequestBody CategoryRequest request) {
         Long id = categoryService.addCategory(request.name(), request.description()).getId();
 
@@ -34,7 +34,7 @@ public class CategoryControllerV1 {
 
 
     @PostMapping("/update/{categoryId}")
-//    @PreAuthorize("hasAuthority(SCOPE_ADMIN)")
+    @PreAuthorize("hasAuthority(T(com.district12.backend.enums.Role).ADMIN.value)")
     public ResponseEntity<Void> updateCategory(@RequestBody CategoryRequest request, @PathVariable Long categoryId) {
         categoryService.updateCategory(categoryId, request.name(), request.description());
         return ResponseEntity.noContent().build();
@@ -42,7 +42,7 @@ public class CategoryControllerV1 {
 
 
     @DeleteMapping("/delete/{categoryId}")
-//    @PreAuthorize("hasAuthority(SCOPE_ADMIN)")
+    @PreAuthorize("hasAuthority(T(com.district12.backend.enums.Role).ADMIN.value)")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long categoryId) {
         categoryService.deleteById(categoryId);
         return ResponseEntity.noContent().build();

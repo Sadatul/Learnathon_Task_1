@@ -16,13 +16,13 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/product")
+@RequestMapping("/v1/products")
 @RequiredArgsConstructor
 @Slf4j
 public class ProductControllerV1 {
     private final ProductService productService;
 
-    @GetMapping("/get-all")
+    @GetMapping
     public ResponseEntity<List<ProductResponse>> getAllProducts() {
         List<Product> products = productService.getAllProducts();
         List<ProductResponse> response = products.stream().map(product ->
@@ -33,7 +33,7 @@ public class ProductControllerV1 {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/get/{productId}")
+    @GetMapping("/{productId}")
     public ResponseEntity<ProductResponse> getProduct(@PathVariable Long productId) {
         Product product = productService.findById(productId);
         ProductResponse response = new ProductResponse(product.getName(), product.getDescription(), product.getPrice(), product.getStock(),
@@ -42,8 +42,8 @@ public class ProductControllerV1 {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/add")
-//    @PreAuthorize("hasAuthority(SCOPE_ADMIN)")
+    @PostMapping
+    @PreAuthorize("hasAuthority(T(com.district12.backend.enums.Role).ADMIN.value)")
     public ResponseEntity<Void> addProduct(@RequestBody ProductRequest request) {
         Long id = productService.addProduct(
                 request.name(),
@@ -59,8 +59,8 @@ public class ProductControllerV1 {
         return ResponseEntity.created(uri).build();
     }
 
-    @PostMapping("/update/{productId}")
-//    @PreAuthorize("hasAuthority(SCOPE_ADMIN)")
+    @PutMapping("/{productId}")
+    @PreAuthorize("hasAuthority(T(com.district12.backend.enums.Role).ADMIN.value)")
     public ResponseEntity<Void> updateProduct(@RequestBody ProductRequest request, @PathVariable Long productId) {
         productService.updateProduct(
                 productId,
@@ -74,8 +74,8 @@ public class ProductControllerV1 {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/delete/{id}")
-//    @PreAuthorize("hasAuthority(SCOPE_ADMIN")
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority(T(com.district12.backend.enums.Role).ADMIN.value)")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productService.deleteById(id);
 

@@ -23,7 +23,7 @@ public class NotificationControllerV1 {
 
     // PUT /notification/order/complete/1
     @PutMapping("/order/complete/{orderId}")
-    @PreAuthorize("hasAuthority(T(com.district12.backend.enums.Role).ADMIN.value)")
+    @PreAuthorize("hasAuthority(T(com.district12.backend.enums.Role).ADMIN.value)") // hasAuthority('SCOPE_ADMIN')
     public ResponseEntity<OrderResponse> shipOneReadyOrderForAdmin(@PathVariable Long orderId) {
         OrderResponse completedOrderResponse = notificationService.completeOrder(orderId);
         return ResponseEntity.ok(completedOrderResponse);
