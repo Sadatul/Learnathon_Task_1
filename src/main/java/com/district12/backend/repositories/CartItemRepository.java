@@ -16,7 +16,7 @@ import java.util.Optional;
 @Repository
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {
 
-    @Query("SELECT new com.district12.backend.dtos.CartItemResponse(p.name, p.description, ci.quantity) " +
+    @Query("SELECT new com.district12.backend.dtos.CartItemResponse(p.id, p.name, p.description, ci.quantity) " +
             "FROM CartItem ci " +
             "JOIN ci.product p " +
             "WHERE ci.user.id = :userId")
@@ -24,7 +24,7 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
 
     Optional<CartItem> findByUserIdAndProduct(Long userId, Product product);
 
-    @Query("SELECT new com.district12.backend.dtos.CartItemResponse(p.name, p.description, ci.quantity) " +
+    @Query("SELECT new com.district12.backend.dtos.CartItemResponse(p.id, p.name, p.description, ci.quantity) " +
             "FROM CartItem ci " +
             "JOIN ci.product p " +
             "WHERE ci.order.id = :orderId")

@@ -36,25 +36,33 @@ public class CartItemControllerV1 {
 
     // POST /item/add
     @PostMapping(path = "/item/add")
-    public ResponseEntity<CartItem> createCartItemForUser(
+    public ResponseEntity<CartItemResponse> createCartItemForUser(
             @Valid @RequestBody CartItemRequest cartItemRequest) {
 
         User user = userService.getUserById(cartItemRequest.getUserId());
         Product cartItemProduct = productService.findById(cartItemRequest.getProductId());
         CartItem savedCartItem = cartItemService.addCartItem(user, cartItemProduct, cartItemRequest.getQuantity());
 
-        return ResponseEntity.ok(savedCartItem);
+        CartItemResponse savedCartItemResponse = new CartItemResponse(
+                cartItemProduct.getId(), cartItemProduct.getName(),
+                cartItemProduct.getDescription(), savedCartItem.getQuantity()
+        );
+        return ResponseEntity.ok(savedCartItemResponse);
     }
 
     // PUT /item/update/quantity
     @PutMapping(path = "/item/update/quantity")
-    public ResponseEntity<CartItem> updateCartItemQuantityForUser(
+    public ResponseEntity<CartItemResponse> updateCartItemQuantityForUser(
             @Valid @RequestBody CartItemUpdateRequest cartItemRequest) {
 
         Product cartItemProduct = productService.findById(cartItemRequest.getProductId());
         CartItem updatedCartItem = cartItemService.updateCartItemQuantity(cartItemRequest.getUserId(), cartItemProduct, cartItemRequest.getNewQuantity());
 
-        return ResponseEntity.ok(updatedCartItem);
+        CartItemResponse updatedCartItemResponse = new CartItemResponse(
+                cartItemProduct.getId(), cartItemProduct.getName(),
+                cartItemProduct.getDescription(), updatedCartItem.getQuantity()
+        );
+        return ResponseEntity.ok(updatedCartItemResponse);
     }
 
     // DELETE /item/delete
