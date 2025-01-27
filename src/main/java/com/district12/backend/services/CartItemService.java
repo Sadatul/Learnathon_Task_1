@@ -5,6 +5,7 @@ import com.district12.backend.entities.CartItem;
 import com.district12.backend.entities.Order;
 import com.district12.backend.entities.Product;
 import com.district12.backend.entities.User;
+import com.district12.backend.exceptions.UnauthorizedException;
 import com.district12.backend.repositories.CartItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -37,16 +38,24 @@ public class CartItemService {
         return cartItemRepository.save(cartItem);
     }
 
-    public CartItem updateCartItemQuantity(Long userId, Product product, Integer quantity) {
-        CartItem existingCartItem = cartItemRepository.findByUserIdAndProduct(userId, product)
-                .orElseThrow(() -> new RuntimeException("CartItem not found for the given user and product"));
+    public CartItem updateCartItemQuantity(Long userId, Long cartItemId, Integer quantity) {
+        CartItem existingCartItem = cartItemRepository.findById(cartItemId)
+                .orElseThrow(() -> new RuntimeException("CartItem not found for the given id"));
+
+        if (!existingCartItem.getUser().getId().equals(userId))
+            throw new UnauthorizedException("User is not authorized to update this cart item");
+
         existingCartItem.setQuantity(quantity);
         return cartItemRepository.save(existingCartItem);
     }
 
-    public void deleteCartItem(Long userId, Product product) {
-        CartItem existingCartItem = cartItemRepository.findByUserIdAndProduct(userId, product)
-                .orElseThrow(() -> new RuntimeException("CartItem not found for the given user and product"));
+    public void deleteCartItem(Long userId, Long cartItemId) {
+        CartItem existingCartItem = cartItemRepository.findById(cartItemId)
+                .orElseThrow(() -> new RuntimeException("CartItem not found for the given id"));
+
+        if (!existingCartItem.getUser().getId().equals(userId))
+            throw new UnauthorizedException("User is not authorized to delete this cart item");
+
         cartItemRepository.delete(existingCartItem);
     }
 

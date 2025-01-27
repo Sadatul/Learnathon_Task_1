@@ -29,9 +29,9 @@ public class CartItemControllerV1 {
     private final UserService userService;
 
     // GET /items/user/101
-    @GetMapping("/items/user/{userId}")
-    public ResponseEntity<List<CartItemResponse>> getCartItems(@PathVariable Long userId) {
-        List<CartItemResponse> cartItems = cartItemService.getCartItemsForUser(userId);
+    @GetMapping("/items/user")
+    public ResponseEntity<List<CartItemResponse>> getCartItems() {
+        List<CartItemResponse> cartItems = cartItemService.getCartItemsForUser(SecurityUtils.getOwnerID());
         return ResponseEntity.ok(cartItems);
     }
 
@@ -41,7 +41,6 @@ public class CartItemControllerV1 {
             @Valid @RequestBody CartItemRequest cartItemRequest) {
 
         User user = userService.getUserById(SecurityUtils.getOwnerID());
-
         Product cartItemProduct = productService.findById(cartItemRequest.getProductId());
         CartItem savedCartItem = cartItemService.addCartItem(user, cartItemProduct, cartItemRequest.getQuantity());
 
@@ -57,24 +56,21 @@ public class CartItemControllerV1 {
     public ResponseEntity<CartItemResponse> updateCartItemQuantityForUser(
             @Valid @RequestBody CartItemUpdateRequest cartItemRequest) {
 
-        Product cartItemProduct = productService.findById(cartItemRequest.getProductId());
         CartItem updatedCartItem = cartItemService.updateCartItemQuantity(
                 SecurityUtils.getOwnerID(),
-                cartItemProduct, cartItemRequest.getNewQuantity());
+                cartItemRequest.getCartItemId(), cartItemRequest.getNewQuantity());
 
         CartItemResponse updatedCartItemResponse = new CartItemResponse(
-                cartItemProduct.getId(), cartItemProduct.getName(),
-                cartItemProduct.getDescription(), updatedCartItem.getQuantity());
+                updatedCartItem.getProduct().getId(), updatedCartItem.getProduct().getName(),
+                updatedCartItem.getProduct().getDescription(), updatedCartItem.getQuantity());
         return ResponseEntity.ok(updatedCartItemResponse);
     }
 
     // DELETE /item/delete
-    @DeleteMapping(path = "/item/delete")
+    @DeleteMapping(path = "/item/delete/{cartItemId}")
     public void deleteCartItemForUser(
-            @Valid @RequestBody CartItemUpdateRequest cartItemRequest) {
-
-        Product cartItemProduct = productService.findById(cartItemRequest.getProductId());
-        cartItemService.deleteCartItem(SecurityUtils.getOwnerID(), cartItemProduct);
+            @PathVariable Long cartItemId) {
+        cartItemService.deleteCartItem(SecurityUtils.getOwnerID(), cartItemId);
     }
 
 }
