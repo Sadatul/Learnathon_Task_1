@@ -5,7 +5,7 @@ meta {
 }
 
 put {
-  url: http://localhost:8080/v1/cart/item/update/quantity
+  url: http://localhost:8080/v1/cart/item/quantity/2
   body: json
   auth: bearer
 }
@@ -16,7 +16,6 @@ auth:bearer {
 
 body:json {
   {
-    "cartItemId": 1,
     "newQuantity" : 2
   }
 }
