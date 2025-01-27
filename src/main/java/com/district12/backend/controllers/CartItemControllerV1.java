@@ -53,7 +53,7 @@ public class CartItemControllerV1 {
     }
 
     // PUT /item/quantity/2
-    @PutMapping(path = "/items/{cartItemId}/quantity")
+    @PatchMapping(path = "/items/{cartItemId}/quantity")
     public ResponseEntity<Object> updateCartItemQuantityForUser(
             @PathVariable Long cartItemId,
             @Valid @RequestBody CartItemUpdateRequest cartItemRequest) {
