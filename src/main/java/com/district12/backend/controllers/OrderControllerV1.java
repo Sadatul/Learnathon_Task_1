@@ -9,7 +9,6 @@ import com.district12.backend.services.OrderService;
 import com.district12.backend.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,8 +54,7 @@ public class OrderControllerV1 {
         if (isCanceled)
             return ResponseEntity.ok("Order successfully canceled.");
         else
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Order cannot be canceled as it is already shipped.");
+            throw new RuntimeException("Order is already shipped and can not be cancelled anymore.");
 
     }
 
@@ -67,8 +65,7 @@ public class OrderControllerV1 {
         if (isConfirmed)
             return ResponseEntity.ok("Order successfully canceled.");
         else
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Order cannot be confirmed before payment.");
+            throw new RuntimeException("Order can not be confirmed before payment.");
     }
 
 }

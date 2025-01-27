@@ -38,38 +38,41 @@ public class CartItemControllerV1 {
 
     // POST /item/add
     @PostMapping(path = "/item")
-    public ResponseEntity<CartItemResponse> createCartItemForUser(
+    public ResponseEntity<Object> createCartItemForUser(
             @Valid @RequestBody CartItemRequest cartItemRequest) {
 
-        User user = userService.getUserById(SecurityUtils.getOwnerID());
-        Product cartItemProduct = productService.findById(cartItemRequest.getProductId());
-        CartItemResponse savedCartItemResponse = cartItemService.addCartItem(
-                user, cartItemProduct, cartItemRequest.getQuantity());
+            User user = userService.getUserById(SecurityUtils.getOwnerID());
+            Product cartItemProduct = productService.findById(cartItemRequest.getProductId());
+            CartItemResponse savedCartItemResponse = cartItemService.addCartItem(
+                    user, cartItemProduct, cartItemRequest.getQuantity());
 
-        URI savedCartItemUri = ServletUriComponentsBuilder.fromCurrentRequestUri()
-                .path("/{id}").buildAndExpand(savedCartItemResponse.getCartItemId()).toUri();
-        return ResponseEntity.created(savedCartItemUri).body(savedCartItemResponse);
+            URI savedCartItemUri = ServletUriComponentsBuilder.fromCurrentRequestUri()
+                    .path("/{id}").buildAndExpand(savedCartItemResponse.getCartItemId()).toUri();
+            return ResponseEntity.created(savedCartItemUri).body(savedCartItemResponse);
+
     }
 
-    // PUT /item/update/quantity/2
-    @PutMapping(path = "/items/{cartItemId}")
-    public ResponseEntity<CartItemResponse> updateCartItemQuantityForUser(
+    // PUT /item/quantity/2
+    @PutMapping(path = "/item/quantity/{cartItemId}")
+    public ResponseEntity<Object> updateCartItemQuantityForUser(
             @PathVariable Long cartItemId,
             @Valid @RequestBody CartItemUpdateRequest cartItemRequest) {
 
-        CartItemResponse updatedCartItemResponse = cartItemService.updateCartItemQuantity(
-                SecurityUtils.getOwnerID(),
-                cartItemId, cartItemRequest.getNewQuantity());
+            CartItemResponse updatedCartItemResponse = cartItemService.updateCartItemQuantity(
+                    SecurityUtils.getOwnerID(),
+                    cartItemId, cartItemRequest.getNewQuantity());
 
-        return ResponseEntity.ok(updatedCartItemResponse);
+            return ResponseEntity.ok(updatedCartItemResponse);
+
     }
 
     // DELETE /item/delete/2
     @DeleteMapping(path = "/item/delete/{cartItemId}")
     public ResponseEntity<Void> deleteCartItemForUser(
             @PathVariable Long cartItemId) {
-        cartItemService.deleteCartItem(SecurityUtils.getOwnerID(), cartItemId);
-        return ResponseEntity.noContent().build();
+
+            cartItemService.deleteCartItem(SecurityUtils.getOwnerID(), cartItemId);
+            return ResponseEntity.noContent().build();
     }
 
 }
