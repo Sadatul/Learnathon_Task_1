@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Slf4j
 public class UserControllerV1 {
-    private UserService userService;
+    private final UserService userService;
 
     @GetMapping("/get-info")
     public ResponseEntity<UserResponse> getUserPersonalDetails() {

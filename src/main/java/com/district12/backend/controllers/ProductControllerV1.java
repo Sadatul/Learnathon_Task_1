@@ -34,7 +34,7 @@ public class ProductControllerV1 {
     }
 
     @GetMapping("/get/{productId}")
-    public ResponseEntity<ProductResponse> getProduct(@RequestParam Long productId) {
+    public ResponseEntity<ProductResponse> getProduct(@PathVariable Long productId) {
         Product product = productService.findById(productId);
         ProductResponse response = new ProductResponse(product.getName(), product.getDescription(), product.getPrice(), product.getStock(),
                 new CategoryResponse(product.getCategory().getName(), product.getCategory().getDescription()));
@@ -43,7 +43,7 @@ public class ProductControllerV1 {
     }
 
     @PutMapping("/add")
-    @PreAuthorize("hasAuthority(SCOPE_ADMIN)")
+//    @PreAuthorize("hasAuthority(SCOPE_ADMIN)")
     public ResponseEntity<Void> addProduct(@RequestBody ProductRequest request) {
         Long id = productService.addProduct(
                 request.name(),
@@ -60,8 +60,8 @@ public class ProductControllerV1 {
     }
 
     @PostMapping("/update/{productId}")
-    @PreAuthorize("hasAuthority(SCOPE_ADMIN)")
-    public ResponseEntity<Void> updateProduct(@RequestBody ProductRequest request, @RequestParam Long productId) {
+//    @PreAuthorize("hasAuthority(SCOPE_ADMIN)")
+    public ResponseEntity<Void> updateProduct(@RequestBody ProductRequest request, @PathVariable Long productId) {
         productService.updateProduct(
                 productId,
                 request.name(),
@@ -74,9 +74,9 @@ public class ProductControllerV1 {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/delete/{id}")
-    @PreAuthorize("hasAuthority(SCOPE_ADMIN")
-    public ResponseEntity<Void> deleteProduct(@RequestParam Long id) {
+    @DeleteMapping("/delete/{id}")
+//    @PreAuthorize("hasAuthority(SCOPE_ADMIN")
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productService.deleteById(id);
 
         return ResponseEntity.noContent().build();

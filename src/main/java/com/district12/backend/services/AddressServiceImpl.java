@@ -1,6 +1,7 @@
 package com.district12.backend.services;
 
 import com.district12.backend.entities.Address;
+import com.district12.backend.entities.User;
 import com.district12.backend.repositories.AddressRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,10 +15,13 @@ import java.util.Optional;
 public class AddressServiceImpl implements AddressService {
 
     private final AddressRepository addressRepository;
+    private final UserService userService;
 
     @Override
-    public Long addAddress(Address address) {
-        return addressRepository.save(address).getId();
+    public Long addAddress(Long userId, String name, String address, String city, Long zipCode) {
+        User user = userService.getUserById(userId);
+        Address shippingAddress = new Address(name, address, city, zipCode, user);
+        return addressRepository.save(shippingAddress).getId();
     }
 
     @Override

@@ -1,8 +1,6 @@
 package com.district12.backend.controllers;
 
 import com.district12.backend.dtos.AddressRequest;
-import com.district12.backend.entities.Address;
-import com.district12.backend.entities.User;
 import com.district12.backend.services.AddressService;
 import com.district12.backend.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +21,12 @@ public class AddressControllerV1 {
     @PutMapping("/add")
     public ResponseEntity<Void> addAddress(@RequestBody AddressRequest request) {
         Long userId = SecurityUtils.getOwnerID();
-        User user = new User(userId);
-        Address address = new Address(request.name(), request.address(), request.city(), request.zipCode(), user);
-        Long id = addressService.addAddress(address);
+        Long id = addressService.addAddress(userId,
+                request.name(),
+                request.address(),
+                request.city(),
+                request.zipCode()
+                );
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri()
                 .path("/{id}").buildAndExpand(id).toUri();
@@ -34,7 +35,7 @@ public class AddressControllerV1 {
     }
 
     @PostMapping("/update/{id}")
-    public ResponseEntity<Void> updateAddress(@RequestBody AddressRequest request, @RequestParam Long addressId) {
+    public ResponseEntity<Void> updateAddress(@RequestBody AddressRequest request, @PathVariable Long addressId) {
         Long id = addressService.updateAddress(addressId, request.name(), request.address(), request.zipCode());
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri()
@@ -44,7 +45,7 @@ public class AddressControllerV1 {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteAddress(@RequestParam Long id) {
+    public ResponseEntity<Void> deleteAddress(@PathVariable Long id) {
         addressService.deleteAddress(id);
         return ResponseEntity.noContent().build();
     }

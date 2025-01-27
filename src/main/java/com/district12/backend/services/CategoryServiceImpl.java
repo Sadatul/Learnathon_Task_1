@@ -39,6 +39,8 @@ public class CategoryServiceImpl implements CategoryService {
 
         category.setName(name);
         category.setDescription(description);
+
+        categoryRepository.save(category);
     }
 
     @Override

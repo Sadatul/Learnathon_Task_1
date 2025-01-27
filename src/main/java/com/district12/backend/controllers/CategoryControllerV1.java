@@ -1,6 +1,7 @@
 package com.district12.backend.controllers;
 
 import com.district12.backend.dtos.CategoryRequest;
+import com.district12.backend.dtos.CategoryResponse;
 import com.district12.backend.entities.Category;
 import com.district12.backend.services.CategoryService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class CategoryControllerV1 {
     private final CategoryService categoryService;
 
     @PutMapping("/add")
-    @PreAuthorize("hasAuthority(SCOPE_ADMIN)")
+//    @PreAuthorize("hasAuthority(SCOPE_ADMIN)")
     public ResponseEntity<Void> addCategory(@RequestBody CategoryRequest request) {
         Long id = categoryService.addCategory(request.name(), request.description()).getId();
 
@@ -33,28 +34,34 @@ public class CategoryControllerV1 {
 
 
     @PostMapping("/update/{categoryId}")
-    @PreAuthorize("hasAuthority(SCOPE_ADMIN)")
-    public ResponseEntity<Void> updateCategory(@RequestBody CategoryRequest request, @RequestParam Long categoryId) {
+//    @PreAuthorize("hasAuthority(SCOPE_ADMIN)")
+    public ResponseEntity<Void> updateCategory(@RequestBody CategoryRequest request, @PathVariable Long categoryId) {
         categoryService.updateCategory(categoryId, request.name(), request.description());
         return ResponseEntity.noContent().build();
     }
 
 
     @DeleteMapping("/delete/{categoryId}")
-    @PreAuthorize("hasAuthority(SCOPE_ADMIN)")
-    public ResponseEntity<Void> deleteCategory(@RequestParam Long categoryId) {
+//    @PreAuthorize("hasAuthority(SCOPE_ADMIN)")
+    public ResponseEntity<Void> deleteCategory(@PathVariable Long categoryId) {
         categoryService.deleteById(categoryId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/get-all")
-    public ResponseEntity<List<Category>> getAllCategories() {
-        return ResponseEntity.ok(categoryService.getAllCategories());
+    public ResponseEntity<List<CategoryResponse>> getAllCategories() {
+        List<Category> categories = categoryService.getAllCategories();
+        List<CategoryResponse> responses = categories.stream().map(category ->
+                new CategoryResponse(category.getName(), category.getDescription())
+                ).toList();
+
+        return ResponseEntity.ok(responses);
     }
 
     @GetMapping("/get/{categoryId}")
-    public ResponseEntity<Category> getCategory(@RequestParam Long categoryId) {
-        return ResponseEntity.ok(categoryService.findById(categoryId));
+    public ResponseEntity<CategoryResponse> getCategory(@PathVariable Long categoryId) {
+        Category category = categoryService.findById(categoryId);
+        return ResponseEntity.ok(new CategoryResponse(category.getName(), category.getDescription()));
     }
 
 }

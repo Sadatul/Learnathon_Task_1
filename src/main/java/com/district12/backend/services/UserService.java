@@ -32,5 +32,6 @@ public class UserService {
         User user = getUserById(userId);
         user.setEmail(email);
         user.setPhoneNumber(phoneNumber);
+        userRepository.save(user);
     }
 }
