@@ -1,0 +1,15 @@
+meta {
+  name: GetAllReadyOrders
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{host}}/v1/ship/get/ready-orders
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2JhY2tlbmQueHl6Iiwic3ViIjoiMyIsImF1ZCI6Imh0dHBzOi8vZnJvbnRlbmQueHl6Iiwic2NwIjoiQURNSU4iLCJleHAiOjE3MzgwNTQxODMsImlhdCI6MTczNzk2Nzc4M30.l61tJocBmXfDAf-fwicjl4A34SrfNt3wdI6MDCT1S8Y
+}

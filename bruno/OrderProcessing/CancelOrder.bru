@@ -1,0 +1,15 @@
+meta {
+  name: CancelOrder
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{host}}/v1/order/cancel/1
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2JhY2tlbmQueHl6Iiwic3ViIjoiMSIsImF1ZCI6Imh0dHBzOi8vZnJvbnRlbmQueHl6Iiwic2NwIjoiVVNFUiIsImV4cCI6MTczODA0NzI5MiwiaWF0IjoxNzM3OTYwODkyfQ.ccrpSy_Up3_gxCXUpohrbVv82JTZfXvCFjFg-UKRvF0
+}

@@ -2,8 +2,6 @@ package com.district12.backend.services;
 
 import com.district12.backend.entities.Product;
 
-import java.util.List;
-
 public interface ProductService {
     Product findById(Long id);
     List<Product> getAllProducts();

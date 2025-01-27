@@ -31,4 +31,10 @@ public class Order {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
+
+    public Order(User user, OrderStatus status) {
+        this.user = user;
+        this.timestamp = ZonedDateTime.now();
+        this.status = status;
+    }
 }

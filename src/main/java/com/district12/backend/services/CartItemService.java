@@ -6,33 +6,37 @@ import com.district12.backend.entities.Order;
 import com.district12.backend.entities.Product;
 import com.district12.backend.entities.User;
 import com.district12.backend.repositories.CartItemRepository;
-import com.district12.backend.repositories.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class CartItemService {
 
     private final CartItemRepository cartItemRepository;
-    private final UserRepository userRepository;
 
     public List<CartItemResponse> getCartItemsForUser(Long userId) {
         return cartItemRepository.findCartItemsByUserId(userId);
     }
 
-    public CartItem addCartItem(Long userId, Product product, Integer quantity) {
-        return cartItemRepository.findByUserIdAndProduct(userId, product)
+    public CartItemResponse addCartItem(User user, Product product, Integer quantity) {
+        CartItem savedCartItem = cartItemRepository.findByUserIdAndProduct(user.getId(), product)
                 .map(existingCartItem -> increaseCartItemQuantity(existingCartItem, quantity))
-                .orElseGet(() -> createAndSaveCartItem(userId, product, quantity));
+                .orElseGet(() -> createAndSaveCartItem(user, product, quantity));
+
+        return new CartItemResponse(
+                savedCartItem.getId(), savedCartItem.getProduct().getId(),
+                savedCartItem.getProduct().getName(),
+                savedCartItem.getProduct().getDescription(), savedCartItem.getQuantity()
+        );
     }
 
-    private CartItem createAndSaveCartItem(Long userId, Product product, Integer quantity) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found for the given user ID"));
+    private CartItem createAndSaveCartItem(User user, Product product, Integer quantity) {
         CartItem newCartItem = new CartItem(user, product, quantity);
         return cartItemRepository.save(newCartItem);
     }
@@ -42,16 +46,24 @@ public class CartItemService {
         return cartItemRepository.save(cartItem);
     }
 
-    public CartItem updateCartItemQuantity(Long userId, Product product, Integer quantity) {
-        CartItem existingCartItem = cartItemRepository.findByUserIdAndProduct(userId, product)
-                .orElseThrow(() -> new RuntimeException("CartItem not found for the given user and product"));
+    public CartItemResponse updateCartItemQuantity(Long userId, Long cartItemId, Integer quantity) {
+        String errorMessage = "User is not authorized to update this cart item";
+        CartItem existingCartItem = verifyCartItemAndUserId(userId, cartItemId, errorMessage);
+
         existingCartItem.setQuantity(quantity);
-        return cartItemRepository.save(existingCartItem);
+        CartItem updatedCartItem = cartItemRepository.save(existingCartItem);
+
+        return new CartItemResponse(
+                updatedCartItem.getId(), updatedCartItem.getProduct().getId(),
+                updatedCartItem.getProduct().getName(),
+                updatedCartItem.getProduct().getDescription(), updatedCartItem.getQuantity()
+        );
     }
 
-    public void deleteCartItem(Long userId, Product product) {
-        CartItem existingCartItem = cartItemRepository.findByUserIdAndProduct(userId, product)
-                .orElseThrow(() -> new RuntimeException("CartItem not found for the given user and product"));
+    public void deleteCartItem(Long userId, Long cartItemId) {
+        String errorMessage = "User is not authorized to delete this cart item";
+        CartItem existingCartItem = verifyCartItemAndUserId(userId, cartItemId, errorMessage);
+
         cartItemRepository.delete(existingCartItem);
     }
 
@@ -59,9 +71,34 @@ public class CartItemService {
         return cartItemRepository.findCartItemsByOrderId(orderId);
     }
 
+    public void doAllCartItemsBelongToUser(List<Long> cartItemIds, Long userId) {
+        boolean allBelongToUser = cartItemRepository.doAllCartItemsBelongToUser(
+                cartItemIds.size(), cartItemIds, userId);
+        if (!allBelongToUser)
+            throw new IllegalArgumentException("One or more cart item(s) do not belong to the user associated with the order.");
+    }
+
+    public void isAnyCartItemInAnotherOrder(List<Long> cartItemIds) {
+        boolean isInAnotherOrder = cartItemRepository.isAnyCartItemInAnotherOrder(cartItemIds);
+        if (isInAnotherOrder)
+            throw new IllegalArgumentException("One or more cart item(s) is already in another order.");
+    }
+
+    @Transactional
     public void updateCartItemsOrderId(List<Long> cartItemIds, Order newOrder) {
         cartItemRepository.updateOrderForCartItems(newOrder, cartItemIds);
     }
 
+    private CartItem verifyCartItemAndUserId(Long userId, Long orderId, String errorMessage) {
+        CartItem existingCartItem = cartItemRepository.findById(orderId)
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart item not found for the given id")
+                );
+
+        if (!existingCartItem.getUser().getId().equals(userId))
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, errorMessage);
+
+        return existingCartItem;
+    }
 
 }

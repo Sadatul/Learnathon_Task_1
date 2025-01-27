@@ -4,11 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
-public class CartItemUpdateRequest {
+public class OrderDetailsResponse {
 
-    private Integer newQuantity;
+    private List<CartItemResponse> cartItems;
+    private OrderResponse orderResponse;
 
 }

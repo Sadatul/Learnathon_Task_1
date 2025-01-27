@@ -1,0 +1,15 @@
+meta {
+  name: ConfirmOrder
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{host}}/v1/order/cancel
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2JhY2tlbmQueHl6Iiwic3ViIjoiMSIsImF1ZCI6Imh0dHBzOi8vZnJvbnRlbmQueHl6Iiwic2NwIjoiVVNFUiIsImV4cCI6MTczNzk5ODU5OCwiaWF0IjoxNzM3OTEyMTk4fQ.hGdqdk1Bh0bZWun9jwWjTzf0PhG-FL3voRrL2Kca_ng
+}
