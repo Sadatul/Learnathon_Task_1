@@ -1,0 +1,74 @@
+name: ecommerce
+
+services:
+  db:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=district12
+      - POSTGRES_PASSWORD=district12
+      - POSTGRES_DB=district12
+    ports:
+      - "3306:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U district12" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ecommerce_network
+
+#  redis:
+#    image: redis/redis-stack:latest
+#    container_name: redis-stack
+#    ports:
+#      - "6379:6379"
+#      - "8001:8001"
+#    healthcheck:
+#      test: [ "CMD", "redis-cli", "ping" ]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+#    networks:
+#      - ecommerce_network
+
+#  backend:
+#    depends_on:
+#      db:
+#        condition: service_healthy
+#      redis:
+#        condition: service_healthy
+#      rabbitmq:
+#        condition: service_healthy
+#    # Either you can build your own image or get one from dockerhub
+#    # Comment one or the other
+#    build:
+#      context: ./backend/pinklifeline
+#    # image: sadatul/pinklifeline_dev:0.0.1-SNAPSHOT
+#    container_name: backend
+#    environment:
+#      - TZ=Asia/Dhaka
+#      - BACKEND_HOST=http://localhost:8080
+#      - FRONTEND_HOST=http://localhost:3000
+#      - DB_URL=mysql:3306/pinklifeline
+#      - DB_USERNAME=pinklifeline
+#      - DB_PASSWORD=pinklifeline
+#      - REDIS_HOST=redis-stack
+#      - REDIS_PORT=6379
+#      - RABBITMQ_HOST=rabbitmq
+#      - RABBITMQ_PORT=61613
+#      - ADMIN_USERNAME=admin
+#      - ADMIN_PASSWORD=pinklifeline
+#      - GETSTREAM_API_KEY=${GETSTREAM_API_KEY}
+#      - GETSTREAM_API_SECRET=${GETSTREAM_API_SECRET}
+#      - SSLCOMMERZ_STORE_ID=${SSLCOMMERZ_STORE_ID}
+#      - SSLCOMMERZ_STORE_PASSWD=${SSLCOMMERZ_STORE_PASSWD}
+#      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
+#      - VAPID_PUBLIC_KEY=${VAPID_PUBLIC_KEY}
+#      - VAPID_PRIVATE_KEY=${VAPID_PRIVATE_KEY}
+#    ports:
+#      - "8080:8080"
+#    networks:
+#      - pinklifeline_network
+networks:
+  ecommerce_network:

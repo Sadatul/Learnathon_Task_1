@@ -32,16 +32,28 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("UPDATE Order o SET o.status = 'CONFIRMED' WHERE o.id = :orderId AND (o.status = 'CHECKED_OUT')")
     void confirmOrderById(@Param("orderId") Long orderId);
 
-    @Query("SELECT o FROM Order o WHERE (o.status = 'CONFIRMED')")
-    List<Order> getAllReadyOrders();
+    @Query("SELECT new com.district12.backend.dtos.OrderResponse(o.id, o.user.id, o.timestamp, o.status) " +
+            "FROM Order o " +
+            "WHERE o.status = 'CONFIRMED'")
+    List<OrderResponse> getAllReadyOrders();
 
     @Modifying
-    @Query("UPDATE Order o SET o.status = 'SHIPPED' WHERE (o.status = 'CONFIRMED')")
-    List<Order> shipAllReadyOrders();
+    @Query("UPDATE Order o SET o.status = 'SHIPPED' WHERE o.status = 'CONFIRMED'")
+    int shipAllReadyOrders();
+
+    @Query("SELECT new com.district12.backend.dtos.OrderResponse(o.id, o.user.id, o.timestamp, o.status) " +
+            "FROM Order o " +
+            "WHERE o.status = 'SHIPPED'")
+    List<OrderResponse> getAllShippedOrders();
 
     @Modifying
-    @Query("UPDATE Order o SET o.status = 'SHIPPED' WHERE o.id = :orderId AND (o.status = 'CONFIRMED')")
-    Order shipOneReadyOrderForAdmin(@Param("orderId") Long orderId);
+    @Query("UPDATE Order o SET o.status = 'SHIPPED' WHERE o.id = :orderId AND o.status = 'CONFIRMED'")
+    int shipOneReadyOrderForAdmin(@Param("orderId") Long orderId);
+
+    @Query("SELECT new com.district12.backend.dtos.OrderResponse(o.id, o.user.id, o.timestamp, o.status) " +
+            "FROM Order o " +
+            "WHERE o.id = :orderId")
+    OrderResponse getOrderResponseById(@Param("orderId") Long orderId);
 
     @Modifying
     @Query("UPDATE Order o SET o.status = 'COMPLETED' WHERE o.id = :orderId")
