@@ -7,6 +7,7 @@ import com.district12.backend.entities.Product;
 import com.district12.backend.entities.User;
 import com.district12.backend.exceptions.UnauthorizedException;
 import com.district12.backend.repositories.CartItemRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -69,6 +70,15 @@ public class CartItemService {
         return cartItemRepository.findCartItemsByOrderId(orderId);
     }
 
+    public boolean doAllCartItemsBelongToUser(List<Long> cartItemIds, Long userId) {
+        boolean allBelongToUser = cartItemRepository.doAllCartItemsBelongToUser(
+                cartItemIds.size(), cartItemIds, userId);
+        if (!allBelongToUser)
+            throw new IllegalArgumentException("One or more cart item(s) do not belong to the user associated with the order.");
+        return true;
+    }
+
+    @Transactional
     public void updateCartItemsOrderId(List<Long> cartItemIds, Order newOrder) {
         cartItemRepository.updateOrderForCartItems(newOrder, cartItemIds);
     }

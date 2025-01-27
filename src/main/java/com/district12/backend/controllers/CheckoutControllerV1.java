@@ -27,6 +27,7 @@ public class CheckoutControllerV1 {
     public void checkOutItemsForUser(
             @Valid @RequestBody CheckoutRequest checkoutRequest) {
 
+        cartItemService.doAllCartItemsBelongToUser(checkoutRequest.getCartItemIds(), SecurityUtils.getOwnerID());
         User user = userService.getUserById(SecurityUtils.getOwnerID());
         Order newOrder = orderService.createOrder(user, checkoutRequest.getPaymentMethod());
         cartItemService.updateCartItemsOrderId(checkoutRequest.getCartItemIds(), newOrder);

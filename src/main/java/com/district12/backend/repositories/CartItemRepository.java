@@ -30,6 +30,13 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
             "WHERE ci.order.id = :orderId")
     List<CartItemResponse> findCartItemsByOrderId(@Param("orderId") Long orderId);
 
+    @Query("SELECT COUNT(ci) = :listSize " +
+            "FROM CartItem ci " +
+            "WHERE ci.id IN :cartItemIds AND ci.user.id = :userId")
+    boolean doAllCartItemsBelongToUser(@Param("listSize") int listSize,
+                                       @Param("cartItemIds") List<Long> cartItemIds,
+                                       @Param("userId") Long userId);
+
     @Modifying
     @Query("UPDATE CartItem ci SET ci.order = :newOrder WHERE ci.id IN :cartItemIds")
     void updateOrderForCartItems(@Param("newOrder") Order newOrder, @Param("cartItemIds") List<Long> cartItemIds);
