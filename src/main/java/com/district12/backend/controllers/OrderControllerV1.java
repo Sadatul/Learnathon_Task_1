@@ -1,6 +1,7 @@
 package com.district12.backend.controllers;
 
 import com.district12.backend.dtos.CartItemResponse;
+import com.district12.backend.dtos.OrderResponse;
 import com.district12.backend.entities.Order;
 import com.district12.backend.services.CartItemService;
 import com.district12.backend.services.OrderService;
@@ -23,16 +24,16 @@ public class OrderControllerV1 {
 
     // GET /order/all
     @GetMapping("/all")
-    public ResponseEntity<List<Order>> getAllOrdersForUser() {
-        List<Order> orders = orderService.getOrdersForUser(SecurityUtils.getOwnerID());
-        return ResponseEntity.ok(orders);
+    public ResponseEntity<List<OrderResponse>> getAllOrdersForUser() {
+        List<OrderResponse> orderResponses = orderService.getOrdersForUser(SecurityUtils.getOwnerID());
+        return ResponseEntity.ok(orderResponses);
     }
 
     // GET /order/past
     @GetMapping("/past")
-    public ResponseEntity<List<Order>> getAllPastOrdersForUser() {
-        List<Order> orders = orderService.getPastOrdersForUser(SecurityUtils.getOwnerID());
-        return ResponseEntity.ok(orders);
+    public ResponseEntity<List<OrderResponse>> getAllPastOrdersForUser() {
+        List<OrderResponse> orderResponses = orderService.getPastOrdersForUser(SecurityUtils.getOwnerID());
+        return ResponseEntity.ok(orderResponses);
     }
 
     // GET /order/details/101

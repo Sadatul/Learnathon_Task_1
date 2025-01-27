@@ -1,5 +1,6 @@
 package com.district12.backend.services;
 
+import com.district12.backend.dtos.OrderResponse;
 import com.district12.backend.entities.Order;
 import com.district12.backend.entities.User;
 import com.district12.backend.enums.OrderStatus;
@@ -17,11 +18,11 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
 
-    public List<Order> getOrdersForUser(Long userId) {
+    public List<OrderResponse> getOrdersForUser(Long userId) {
         return orderRepository.findOrdersByUserId(userId);
     }
 
-    public List<Order> getPastOrdersForUser(Long userId) {
+    public List<OrderResponse> getPastOrdersForUser(Long userId) {
         return orderRepository.findPastOrdersByUserId(userId);
     }
 
