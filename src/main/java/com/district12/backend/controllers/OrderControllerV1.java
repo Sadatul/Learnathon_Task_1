@@ -9,6 +9,7 @@ import com.district12.backend.services.OrderService;
 import com.district12.backend.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,16 +48,27 @@ public class OrderControllerV1 {
         return ResponseEntity.ok(orderDetailsResponse);
     }
 
-    // PUT /order/cancel/101
+    // PUT /order/cancel/1
     @PutMapping("/cancel/{orderId}")
-    public boolean cancelOrderForUser(@PathVariable Long orderId) {
-        return orderService.cancelOrderForUser(SecurityUtils.getOwnerID(), orderId);
+    public ResponseEntity<Object> cancelOrderForUser(@PathVariable Long orderId) {
+        boolean isCanceled = orderService.cancelOrderForUser(SecurityUtils.getOwnerID(), orderId);
+        if (isCanceled)
+            return ResponseEntity.ok("Order successfully canceled.");
+        else
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Order cannot be canceled as it is already shipped.");
+
     }
 
-    // PUT /order/confirm/101
+    // PUT /order/confirm/1
     @PutMapping("/confirm/{orderId}")
-    public boolean confirmOrderForUser(@PathVariable Long orderId) {
-        return orderService.confirmOrderForUser(SecurityUtils.getOwnerID(), orderId);
+    public ResponseEntity<Object> confirmOrderForUser(@PathVariable Long orderId) {
+        boolean isConfirmed = orderService.confirmOrderForUser(SecurityUtils.getOwnerID(), orderId);
+        if (isConfirmed)
+            return ResponseEntity.ok("Order successfully canceled.");
+        else
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Order cannot be confirmed before payment.");
     }
 
 }

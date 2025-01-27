@@ -13,6 +13,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/v1/checkout")
@@ -40,7 +43,10 @@ public class CheckoutControllerV1 {
         OrderResponse orderResponse = new OrderResponse(
                 newOrder.getId(), SecurityUtils.getOwnerID(),
                 newOrder.getTimestamp(), newOrder.getStatus());
-        return ResponseEntity.ok(orderResponse);
+
+        URI savedCartItemUri = ServletUriComponentsBuilder.fromCurrentRequestUri()
+                .path("/{id}").buildAndExpand(orderResponse.getOrderId()).toUri();
+        return ResponseEntity.created(savedCartItemUri).body(orderResponse);
 
     }
 
