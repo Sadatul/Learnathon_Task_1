@@ -66,7 +66,7 @@ public class CartItemControllerV1 {
         return ResponseEntity.ok(updatedCartItemResponse);
     }
 
-    // DELETE /item/delete
+    // DELETE /item/delete/2
     @DeleteMapping(path = "/item/delete/{cartItemId}")
     public void deleteCartItemForUser(
             @PathVariable Long cartItemId) {
