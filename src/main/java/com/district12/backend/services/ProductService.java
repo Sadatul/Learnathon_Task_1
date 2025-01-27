@@ -5,6 +5,8 @@ import com.district12.backend.repositories.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ProductService {
@@ -15,4 +17,7 @@ public class ProductService {
                 .orElseThrow(() -> new RuntimeException("Product not found for the given user id"));
     }
 
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
+    }
 }
