@@ -1,6 +1,7 @@
 package com.district12.backend.services;
 
 import com.district12.backend.dtos.CartItemResponse;
+import com.district12.backend.dtos.OrderResponse;
 import com.district12.backend.entities.CartItem;
 import com.district12.backend.entities.Order;
 import com.district12.backend.entities.Product;
@@ -70,12 +71,17 @@ public class CartItemService {
         return cartItemRepository.findCartItemsByOrderId(orderId);
     }
 
-    public boolean doAllCartItemsBelongToUser(List<Long> cartItemIds, Long userId) {
+    public void doAllCartItemsBelongToUser(List<Long> cartItemIds, Long userId) {
         boolean allBelongToUser = cartItemRepository.doAllCartItemsBelongToUser(
                 cartItemIds.size(), cartItemIds, userId);
         if (!allBelongToUser)
             throw new IllegalArgumentException("One or more cart item(s) do not belong to the user associated with the order.");
-        return true;
+    }
+
+    public void isAnyCartItemInAnotherOrder(List<Long> cartItemIds) {
+        boolean isInAnotherOrder = cartItemRepository.isAnyCartItemInAnotherOrder(cartItemIds);
+        if (isInAnotherOrder)
+            throw new IllegalArgumentException("One or more cart item(s) is already in another order.");
     }
 
     @Transactional
