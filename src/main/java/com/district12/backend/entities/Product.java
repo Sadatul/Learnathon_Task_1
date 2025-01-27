@@ -1,10 +1,7 @@
 package com.district12.backend.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Entity
 @Table(name = "products")
@@ -41,5 +38,15 @@ public class Product {
         this.price = price;
         this.stock = stock;
         this.category = category;
+    }
+
+    @RequiredArgsConstructor
+    @Getter
+    public enum SortCategory {
+        PRICE("price"),
+        STOCK("stock"),
+        NAME("name");
+
+        private final String value;
     }
 }

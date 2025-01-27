@@ -1,16 +1,21 @@
 package com.district12.backend.controllers;
 
 import com.district12.backend.dtos.CategoryResponse;
+import com.district12.backend.dtos.ProductFilterRequestBody;
 import com.district12.backend.dtos.ProductRequest;
 import com.district12.backend.dtos.ProductResponse;
 import com.district12.backend.entities.Product;
 import com.district12.backend.services.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import com.district12.backend.entities.Product.SortCategory;
 
 import java.net.URI;
 import java.util.List;
@@ -23,14 +28,26 @@ public class ProductControllerV1 {
     private final ProductService productService;
 
     @GetMapping
-    public ResponseEntity<List<ProductResponse>> getAllProducts() {
-        List<Product> products = productService.getAllProducts();
-        List<ProductResponse> response = products.stream().map(product ->
+    public ResponseEntity<PagedModel<ProductResponse>> getAllProducts(
+            ProductFilterRequestBody filterRequestBody,
+            @RequestParam(required = false, defaultValue = "0") Integer page,
+            @RequestParam(required = false, defaultValue = "10") Integer size,
+            @RequestParam(required = false, defaultValue = "NAME") SortCategory sort,
+            @RequestParam(required = false, defaultValue = "ASC") Sort.Direction direction
+            ) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sort.getValue()));
+        Specification<Product> specification = productService.getProductFilterSpecification(
+                filterRequestBody.priceStart(), filterRequestBody.priceEnd(),
+                filterRequestBody.inStock(), filterRequestBody.categoryId());
+        Page<Product> productPage = productService.getAllProducts(specification, pageable);
+
+        List<ProductResponse> response = productPage.getContent().stream().map(product ->
                 new ProductResponse(product.getName(), product.getDescription(), product.getPrice(), product.getStock(),
                         new CategoryResponse(product.getCategory().getName(), product.getCategory().getDescription())
                         )
                 ).toList();
-        return ResponseEntity.ok(response);
+        Page<ProductResponse> res = new PageImpl<>(response, pageable, productPage.getTotalElements());
+        return ResponseEntity.ok(new PagedModel<>(res));
     }
 
     @GetMapping("/{productId}")
@@ -81,5 +98,4 @@ public class ProductControllerV1 {
 
         return ResponseEntity.noContent().build();
     }
-
 }
