@@ -16,9 +16,9 @@ import java.util.List;
 @AllArgsConstructor
 public class CheckoutRequest {
 
-    private Long userId;
     private List<Long> cartItemIds;
     private Address address;
+
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
 

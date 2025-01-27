@@ -9,6 +9,7 @@ import com.district12.backend.entities.User;
 import com.district12.backend.services.CartItemService;
 import com.district12.backend.services.ProductService;
 import com.district12.backend.services.UserService;
+import com.district12.backend.utils.SecurityUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,42 +29,42 @@ public class CartItemControllerV1 {
     private final UserService userService;
 
     // GET /items/user/101
-    @GetMapping("/items/user/{userId}")
-    public ResponseEntity<List<CartItemResponse>> getCartItems(@PathVariable Long userId) {
-        List<CartItemResponse> cartItems = cartItemService.getCartItemsForUser(userId);
+    @GetMapping("/items/user")
+    public ResponseEntity<List<CartItemResponse>> getCartItems() {
+        List<CartItemResponse> cartItems = cartItemService.getCartItemsForUser(SecurityUtils.getOwnerID());
         return ResponseEntity.ok(cartItems);
     }
 
     // POST /item/add
     @PostMapping(path = "/item/add")
-    public ResponseEntity<CartItem> createCartItemForUser(
+    public ResponseEntity<CartItemResponse> createCartItemForUser(
             @Valid @RequestBody CartItemRequest cartItemRequest) {
 
-        User user = userService.getUserById(cartItemRequest.getUserId());
+        User user = userService.getUserById(SecurityUtils.getOwnerID());
         Product cartItemProduct = productService.findById(cartItemRequest.getProductId());
-        CartItem savedCartItem = cartItemService.addCartItem(user, cartItemProduct, cartItemRequest.getQuantity());
+        CartItemResponse savedCartItemResponse = cartItemService.addCartItem(
+                user, cartItemProduct, cartItemRequest.getQuantity());
 
-        return ResponseEntity.ok(savedCartItem);
+        return ResponseEntity.ok(savedCartItemResponse);
     }
 
     // PUT /item/update/quantity
     @PutMapping(path = "/item/update/quantity")
-    public ResponseEntity<CartItem> updateCartItemQuantityForUser(
+    public ResponseEntity<CartItemResponse> updateCartItemQuantityForUser(
             @Valid @RequestBody CartItemUpdateRequest cartItemRequest) {
 
-        Product cartItemProduct = productService.findById(cartItemRequest.getProductId());
-        CartItem updatedCartItem = cartItemService.updateCartItemQuantity(cartItemRequest.getUserId(), cartItemProduct, cartItemRequest.getNewQuantity());
+        CartItemResponse updatedCartItemResponse = cartItemService.updateCartItemQuantity(
+                SecurityUtils.getOwnerID(),
+                cartItemRequest.getCartItemId(), cartItemRequest.getNewQuantity());
 
-        return ResponseEntity.ok(updatedCartItem);
+        return ResponseEntity.ok(updatedCartItemResponse);
     }
 
-    // DELETE /item/delete
-    @DeleteMapping(path = "/item/delete")
+    // DELETE /item/delete/2
+    @DeleteMapping(path = "/item/delete/{cartItemId}")
     public void deleteCartItemForUser(
-            @Valid @RequestBody CartItemUpdateRequest cartItemRequest) {
-
-        Product cartItemProduct = productService.findById(cartItemRequest.getProductId());
-        cartItemService.deleteCartItem(cartItemRequest.getUserId(), cartItemProduct);
+            @PathVariable Long cartItemId) {
+        cartItemService.deleteCartItem(SecurityUtils.getOwnerID(), cartItemId);
     }
 
 }

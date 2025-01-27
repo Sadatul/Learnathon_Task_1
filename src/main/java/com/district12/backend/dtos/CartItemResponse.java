@@ -7,6 +7,8 @@ import lombok.*;
 @AllArgsConstructor
 public class CartItemResponse {
 
+    private Long cartItemId;
+    private Long productId;
     private String productName;
     private String productDescription;
     private Integer quantity;

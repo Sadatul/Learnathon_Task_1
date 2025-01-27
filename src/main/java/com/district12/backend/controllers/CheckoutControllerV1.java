@@ -6,6 +6,7 @@ import com.district12.backend.entities.User;
 import com.district12.backend.services.CartItemService;
 import com.district12.backend.services.OrderService;
 import com.district12.backend.services.UserService;
+import com.district12.backend.utils.SecurityUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +27,9 @@ public class CheckoutControllerV1 {
     public void checkOutItemsForUser(
             @Valid @RequestBody CheckoutRequest checkoutRequest) {
 
-        User user = userService.getUserById(checkoutRequest.getUserId());
-        Order savedOrder = orderService.createOrder(user, checkoutRequest.getPaymentMethod());
-        cartItemService.updateCartItemsOrderId(checkoutRequest.getCartItemIds(), savedOrder);
+        User user = userService.getUserById(SecurityUtils.getOwnerID());
+        Order newOrder = orderService.createOrder(user, checkoutRequest.getPaymentMethod());
+        cartItemService.updateCartItemsOrderId(checkoutRequest.getCartItemIds(), newOrder);
     }
 
 }
