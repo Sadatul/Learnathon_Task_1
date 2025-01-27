@@ -1,0 +1,15 @@
+meta {
+  name: GetUserInfo
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{host}}/v1/user/get-info
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2JhY2tlbmQueHl6Iiwic3ViIjoiMSIsImF1ZCI6Imh0dHBzOi8vZnJvbnRlbmQueHl6Iiwic2NwIjoiVVNFUiIsImV4cCI6MTczODA3NTk4MiwiaWF0IjoxNzM3OTg5NTgyfQ.5fMj1mybNCX9nK7X8JPK6JWW_h4xIJxV6yNfCltcp9Q
+}

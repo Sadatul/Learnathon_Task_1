@@ -25,4 +25,13 @@ public class Category {
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @ToString.Exclude
     private List<Product> products;
+
+    public Category(Long id) {
+        this.id = id;
+    }
+
+    public Category(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
 }
