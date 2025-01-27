@@ -31,23 +31,20 @@ public class OrderService {
     }
 
     public Order getOrderById(Long userId, Long orderId) {
-        return this.verifyUserId(
-                userId, orderId,
-                "User is not authorized to retrieve the details of this order");
+        String errorMessage = "User is not authorized to retrieve the details of this order";
+        return this.verifyUserId(userId, orderId, errorMessage);
     }
 
     public boolean cancelOrderForUser(Long userId, Long orderId) {
-        Order existingOrder = this.verifyUserId(
-                userId, orderId,
-                "User is not authorized to cancel this order");
+        String errorMessage = "User is not authorized to cancel this order";
+        this.verifyUserId(userId, orderId, errorMessage);
         orderRepository.cancelOrderById(orderId);
         return true;
     }
 
     public boolean confirmOrderForUser(Long userId, Long orderId) {
-        Order existingOrder = this.verifyUserId(
-                userId, orderId,
-                "User is not authorized to confirm this order");
+        String errorMessage = "User is not authorized to confirm this order";
+        this.verifyUserId(userId, orderId, errorMessage);
         orderRepository.confirmOrderById(orderId);
         return true;
     }

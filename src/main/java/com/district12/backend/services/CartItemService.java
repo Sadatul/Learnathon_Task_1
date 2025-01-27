@@ -39,22 +39,16 @@ public class CartItemService {
     }
 
     public CartItem updateCartItemQuantity(Long userId, Long cartItemId, Integer quantity) {
-        CartItem existingCartItem = cartItemRepository.findById(cartItemId)
-                .orElseThrow(() -> new RuntimeException("CartItem not found for the given id"));
-
-        if (!existingCartItem.getUser().getId().equals(userId))
-            throw new UnauthorizedException("User is not authorized to update this cart item");
+        String errorMessage = "User is not authorized to update this cart item";
+        CartItem existingCartItem = verifyUserId(userId, cartItemId, errorMessage);
 
         existingCartItem.setQuantity(quantity);
         return cartItemRepository.save(existingCartItem);
     }
 
     public void deleteCartItem(Long userId, Long cartItemId) {
-        CartItem existingCartItem = cartItemRepository.findById(cartItemId)
-                .orElseThrow(() -> new RuntimeException("CartItem not found for the given id"));
-
-        if (!existingCartItem.getUser().getId().equals(userId))
-            throw new UnauthorizedException("User is not authorized to delete this cart item");
+        String errorMessage = "User is not authorized to delete this cart item";
+        CartItem existingCartItem = verifyUserId(userId, cartItemId, errorMessage);
 
         cartItemRepository.delete(existingCartItem);
     }
@@ -65,6 +59,16 @@ public class CartItemService {
 
     public void updateCartItemsOrderId(List<Long> cartItemIds, Order newOrder) {
         cartItemRepository.updateOrderForCartItems(newOrder, cartItemIds);
+    }
+
+    private CartItem verifyUserId(Long userId, Long orderId, String errorMessage) {
+        CartItem existingCartItem = cartItemRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Cart item not found for the given id"));
+
+        if (!existingCartItem.getUser().getId().equals(userId))
+            throw new UnauthorizedException(errorMessage);
+
+        return existingCartItem;
     }
 
 }
