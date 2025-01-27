@@ -26,7 +26,8 @@ public class OrderService {
     }
 
     public Order createOrder(User user, PaymentMethod paymentMethod) {
-        Order order = new Order(user, OrderStatus.CHECKED_OUT, paymentMethod);
+//        Order order = new Order(user, OrderStatus.CHECKED_OUT, paymentMethod);
+        Order order = new Order(user, OrderStatus.CHECKED_OUT);
         return orderRepository.save(order);
     }
 

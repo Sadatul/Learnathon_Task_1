@@ -3,7 +3,6 @@ package com.district12.backend.controllers;
 import com.district12.backend.dtos.CartItemRequest;
 import com.district12.backend.dtos.CartItemResponse;
 import com.district12.backend.dtos.CartItemUpdateRequest;
-import com.district12.backend.entities.CartItem;
 import com.district12.backend.entities.Product;
 import com.district12.backend.entities.User;
 import com.district12.backend.services.CartItemService;
