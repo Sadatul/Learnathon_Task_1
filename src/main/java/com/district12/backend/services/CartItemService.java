@@ -22,10 +22,16 @@ public class CartItemService {
         return cartItemRepository.findCartItemsByUserId(userId);
     }
 
-    public CartItem addCartItem(User user, Product product, Integer quantity) {
-        return cartItemRepository.findByUserIdAndProduct(user.getId(), product)
+    public CartItemResponse addCartItem(User user, Product product, Integer quantity) {
+        CartItem savedCartItem = cartItemRepository.findByUserIdAndProduct(user.getId(), product)
                 .map(existingCartItem -> increaseCartItemQuantity(existingCartItem, quantity))
                 .orElseGet(() -> createAndSaveCartItem(user, product, quantity));
+
+        return new CartItemResponse(
+                savedCartItem.getId(), savedCartItem.getProduct().getId(),
+                savedCartItem.getProduct().getName(),
+                savedCartItem.getProduct().getDescription(), savedCartItem.getQuantity()
+        );
     }
 
     private CartItem createAndSaveCartItem(User user, Product product, Integer quantity) {
@@ -38,12 +44,18 @@ public class CartItemService {
         return cartItemRepository.save(cartItem);
     }
 
-    public CartItem updateCartItemQuantity(Long userId, Long cartItemId, Integer quantity) {
+    public CartItemResponse updateCartItemQuantity(Long userId, Long cartItemId, Integer quantity) {
         String errorMessage = "User is not authorized to update this cart item";
         CartItem existingCartItem = verifyUserId(userId, cartItemId, errorMessage);
 
         existingCartItem.setQuantity(quantity);
-        return cartItemRepository.save(existingCartItem);
+        CartItem updatedCartItem = cartItemRepository.save(existingCartItem);
+
+        return new CartItemResponse(
+                updatedCartItem.getId(), updatedCartItem.getProduct().getId(),
+                updatedCartItem.getProduct().getName(),
+                updatedCartItem.getProduct().getDescription(), updatedCartItem.getQuantity()
+        );
     }
 
     public void deleteCartItem(Long userId, Long cartItemId) {

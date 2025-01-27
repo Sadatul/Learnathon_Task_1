@@ -42,12 +42,9 @@ public class CartItemControllerV1 {
 
         User user = userService.getUserById(SecurityUtils.getOwnerID());
         Product cartItemProduct = productService.findById(cartItemRequest.getProductId());
-        CartItem savedCartItem = cartItemService.addCartItem(user, cartItemProduct, cartItemRequest.getQuantity());
+        CartItemResponse savedCartItemResponse = cartItemService.addCartItem(
+                user, cartItemProduct, cartItemRequest.getQuantity());
 
-        CartItemResponse savedCartItemResponse = new CartItemResponse(
-                cartItemProduct.getId(), cartItemProduct.getName(),
-                cartItemProduct.getDescription(), savedCartItem.getQuantity()
-        );
         return ResponseEntity.ok(savedCartItemResponse);
     }
 
@@ -56,13 +53,10 @@ public class CartItemControllerV1 {
     public ResponseEntity<CartItemResponse> updateCartItemQuantityForUser(
             @Valid @RequestBody CartItemUpdateRequest cartItemRequest) {
 
-        CartItem updatedCartItem = cartItemService.updateCartItemQuantity(
+        CartItemResponse updatedCartItemResponse = cartItemService.updateCartItemQuantity(
                 SecurityUtils.getOwnerID(),
                 cartItemRequest.getCartItemId(), cartItemRequest.getNewQuantity());
 
-        CartItemResponse updatedCartItemResponse = new CartItemResponse(
-                updatedCartItem.getProduct().getId(), updatedCartItem.getProduct().getName(),
-                updatedCartItem.getProduct().getDescription(), updatedCartItem.getQuantity());
         return ResponseEntity.ok(updatedCartItemResponse);
     }
 
