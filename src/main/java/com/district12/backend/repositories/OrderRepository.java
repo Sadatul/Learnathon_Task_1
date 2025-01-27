@@ -56,7 +56,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     OrderResponse getOrderResponseById(@Param("orderId") Long orderId);
 
     @Modifying
-    @Query("UPDATE Order o SET o.status = 'COMPLETED' WHERE o.id = :orderId")
-    Order completeOrder(@Param("orderId") Long orderId);
-
+    @Query("UPDATE Order o SET o.status = 'COMPLETED' WHERE o.id = :orderId AND o.status = 'SHIPPED'")
+    int completeOrder(@Param("orderId") Long orderId);
 }
