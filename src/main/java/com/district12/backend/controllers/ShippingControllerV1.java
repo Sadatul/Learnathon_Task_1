@@ -3,7 +3,6 @@ package com.district12.backend.controllers;
 import com.district12.backend.dtos.OrderResponse;
 import com.district12.backend.services.ShippingService;
 import com.district12.backend.services.UserService;
-import com.district12.backend.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

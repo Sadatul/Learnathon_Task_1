@@ -1,7 +1,6 @@
 package com.district12.backend.entities;
 
 import com.district12.backend.enums.OrderStatus;
-import com.district12.backend.enums.PaymentMethod;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,17 +31,6 @@ public class Order {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
-
-//    @Column(nullable = false)
-//    @Enumerated(EnumType.STRING)
-//    private PaymentMethod paymentMethod;
-
-//    public Order(User user, OrderStatus status, PaymentMethod paymentMethod) {
-//        this.user = user;
-//        this.timestamp = ZonedDateTime.now();
-//        this.status = status;
-//        this.paymentMethod = paymentMethod;
-//    }
 
     public Order(User user, OrderStatus status) {
         this.user = user;
