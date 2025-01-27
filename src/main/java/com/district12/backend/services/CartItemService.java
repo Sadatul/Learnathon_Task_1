@@ -48,7 +48,7 @@ public class CartItemService {
 
     public CartItemResponse updateCartItemQuantity(Long userId, Long cartItemId, Integer quantity) {
         String errorMessage = "User is not authorized to update this cart item";
-        CartItem existingCartItem = verifyUserId(userId, cartItemId, errorMessage);
+        CartItem existingCartItem = verifyCartItemAndUserId(userId, cartItemId, errorMessage);
 
         existingCartItem.setQuantity(quantity);
         CartItem updatedCartItem = cartItemRepository.save(existingCartItem);
@@ -62,7 +62,7 @@ public class CartItemService {
 
     public void deleteCartItem(Long userId, Long cartItemId) {
         String errorMessage = "User is not authorized to delete this cart item";
-        CartItem existingCartItem = verifyUserId(userId, cartItemId, errorMessage);
+        CartItem existingCartItem = verifyCartItemAndUserId(userId, cartItemId, errorMessage);
 
         cartItemRepository.delete(existingCartItem);
     }
@@ -89,7 +89,7 @@ public class CartItemService {
         cartItemRepository.updateOrderForCartItems(newOrder, cartItemIds);
     }
 
-    private CartItem verifyUserId(Long userId, Long orderId, String errorMessage) {
+    private CartItem verifyCartItemAndUserId(Long userId, Long orderId, String errorMessage) {
         CartItem existingCartItem = cartItemRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Cart item not found for the given id"));
 

@@ -27,11 +27,11 @@ public class UserService {
         );
     }
 
-    public User verifyAdminRoleById(Long userId) {
+    public void verifyAdminRoleById(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UsernameNotFoundException("User not found"));
         if (user.getRole() != Role.ADMIN)
             throw new UnauthorizedException("User is not authorized to access this resource.");
-        return user;
+        // return user;
     }
 }

@@ -47,16 +47,25 @@ public class OrderControllerV1 {
         return ResponseEntity.ok(orderDetailsResponse);
     }
 
-    // PUT /order/cancel/101
+    // PUT /order/cancel/1
     @PutMapping("/cancel/{orderId}")
-    public boolean cancelOrderForUser(@PathVariable Long orderId) {
-        return orderService.cancelOrderForUser(SecurityUtils.getOwnerID(), orderId);
+    public ResponseEntity<Object> cancelOrderForUser(@PathVariable Long orderId) {
+        boolean isCanceled = orderService.cancelOrderForUser(SecurityUtils.getOwnerID(), orderId);
+        if (isCanceled)
+            return ResponseEntity.ok("Order successfully canceled.");
+        else
+            throw new RuntimeException("Order is already shipped and can not be cancelled anymore.");
+
     }
 
-    // PUT /order/confirm/101
+    // PUT /order/confirm/1
     @PutMapping("/confirm/{orderId}")
-    public boolean confirmOrderForUser(@PathVariable Long orderId) {
-        return orderService.confirmOrderForUser(SecurityUtils.getOwnerID(), orderId);
+    public ResponseEntity<Object> confirmOrderForUser(@PathVariable Long orderId) {
+        boolean isConfirmed = orderService.confirmOrderForUser(SecurityUtils.getOwnerID(), orderId);
+        if (isConfirmed)
+            return ResponseEntity.ok("Order successfully canceled.");
+        else
+            throw new RuntimeException("Order can not be confirmed before payment.");
     }
 
 }
