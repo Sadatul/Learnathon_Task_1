@@ -3,10 +3,13 @@ package com.district12.backend.services;
 import com.district12.backend.entities.Category;
 import com.district12.backend.entities.Product;
 import com.district12.backend.repositories.ProductRepository;
+import com.district12.backend.specifications.ProductSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -20,8 +23,8 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new RuntimeException("Product not found for the given user id"));
     }
 
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public Page<Product> getAllProducts(Specification<Product> specification, Pageable pageable) {
+        return productRepository.findAll(specification, pageable);
     }
 
     @Override
@@ -47,5 +50,12 @@ public class ProductServiceImpl implements ProductService {
 
     public void deleteById(Long id) {
         productRepository.deleteById(id);
+    }
+
+    @Override
+    public Specification<Product> getProductFilterSpecification(Integer priceStart, Integer priceEnd, Boolean inStock, Long categoryId) {
+        return Specification.where(ProductSpecification.withPrice(priceStart, priceEnd))
+                .and(ProductSpecification.withStock(inStock))
+                .and(ProductSpecification.withCategory(categoryId));
     }
 }
