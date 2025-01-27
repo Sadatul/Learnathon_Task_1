@@ -7,12 +7,12 @@ import com.district12.backend.entities.Order;
 import com.district12.backend.entities.User;
 import com.district12.backend.enums.OrderStatus;
 import com.district12.backend.enums.PaymentMethod;
-import com.district12.backend.exceptions.UnauthorizedException;
 import com.district12.backend.repositories.OrderRepository;
-import com.district12.backend.utils.SecurityUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -66,10 +66,10 @@ public class OrderService {
 
     private Order verifyUserId(Long userId, Long orderId, String errorMessage) {
         Order existingOrder = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found for the given order id"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found for the given order id"));
 
         if (!existingOrder.getUser().getId().equals(userId))
-            throw new UnauthorizedException(errorMessage);
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, errorMessage);
 
         return existingOrder;
     }

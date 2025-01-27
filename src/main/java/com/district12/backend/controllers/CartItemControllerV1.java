@@ -37,7 +37,7 @@ public class CartItemControllerV1 {
     }
 
     // POST /item/add
-    @PostMapping(path = "/item")
+    @PostMapping(path = "/items")
     public ResponseEntity<Object> createCartItemForUser(
             @Valid @RequestBody CartItemRequest cartItemRequest) {
 
@@ -53,7 +53,7 @@ public class CartItemControllerV1 {
     }
 
     // PUT /item/quantity/2
-    @PutMapping(path = "/item/quantity/{cartItemId}")
+    @PutMapping(path = "/items/{cartItemId}/quantity")
     public ResponseEntity<Object> updateCartItemQuantityForUser(
             @PathVariable Long cartItemId,
             @Valid @RequestBody CartItemUpdateRequest cartItemRequest) {
@@ -67,7 +67,7 @@ public class CartItemControllerV1 {
     }
 
     // DELETE /item/delete/2
-    @DeleteMapping(path = "/item/delete/{cartItemId}")
+    @DeleteMapping(path = "/items/{cartItemId}")
     public ResponseEntity<Void> deleteCartItemForUser(
             @PathVariable Long cartItemId) {
 

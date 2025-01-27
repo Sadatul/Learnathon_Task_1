@@ -1,16 +1,16 @@
 package com.district12.backend.services;
 
 import com.district12.backend.dtos.CartItemResponse;
-import com.district12.backend.dtos.OrderResponse;
 import com.district12.backend.entities.CartItem;
 import com.district12.backend.entities.Order;
 import com.district12.backend.entities.Product;
 import com.district12.backend.entities.User;
-import com.district12.backend.exceptions.UnauthorizedException;
 import com.district12.backend.repositories.CartItemRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -91,10 +91,12 @@ public class CartItemService {
 
     private CartItem verifyCartItemAndUserId(Long userId, Long orderId, String errorMessage) {
         CartItem existingCartItem = cartItemRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Cart item not found for the given id"));
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart item not found for the given id")
+                );
 
         if (!existingCartItem.getUser().getId().equals(userId))
-            throw new UnauthorizedException(errorMessage);
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, errorMessage);
 
         return existingCartItem;
     }
