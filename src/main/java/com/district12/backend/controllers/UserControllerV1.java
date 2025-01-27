@@ -28,10 +28,7 @@ public class UserControllerV1 {
     @PostMapping("/update-info")
     public ResponseEntity<Void> updateUserProfile(@Valid @RequestBody UserRequest request) {
         Long userId = SecurityUtils.getOwnerID();
-        User user = userService.getUserById(userId);
-
-        user.setEmail(request.email());
-        user.setPhoneNumber(request.phoneNumber());
+        userService.updateUserInfo(userId, request.email(), request.phoneNumber());
         return ResponseEntity.noContent().build();
     }
 

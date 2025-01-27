@@ -16,7 +16,7 @@ public class AddressServiceImpl implements AddressService {
     private final AddressRepository addressRepository;
 
     @Override
-    public Long saveAddress(Address address) {
+    public Long addAddress(Address address) {
         return addressRepository.save(address).getId();
     }
 
@@ -34,5 +34,15 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public void deleteAddress(Long id) {
         addressRepository.deleteById(id);
+    }
+
+    @Override
+    public Long updateAddress(Long addressId, String name, String address, Long zipCode) {
+        Address existingAddress = getAddress(addressId);
+        existingAddress.setName(name);
+        existingAddress.setAddress(address);
+        existingAddress.setZipCode(zipCode);
+
+        return addressId;
     }
 }

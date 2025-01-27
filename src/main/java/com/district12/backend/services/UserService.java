@@ -3,6 +3,7 @@ package com.district12.backend.services;
 import com.district12.backend.entities.User;
 import com.district12.backend.repositories.UserRepository;
 import com.district12.backend.repositories.UserVerificationRepository;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -25,5 +26,11 @@ public class UserService {
         return userRepository.findById(userId).orElseThrow(
                 () -> new UsernameNotFoundException("User not found")
         );
+    }
+
+    public void updateUserInfo(Long userId, String email, String phoneNumber) {
+        User user = getUserById(userId);
+        user.setEmail(email);
+        user.setPhoneNumber(phoneNumber);
     }
 }

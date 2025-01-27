@@ -1,17 +1,18 @@
 package com.district12.backend.controllers;
 
 import com.district12.backend.dtos.CategoryResponse;
+import com.district12.backend.dtos.ProductRequest;
 import com.district12.backend.dtos.ProductResponse;
 import com.district12.backend.entities.Product;
 import com.district12.backend.services.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -40,4 +41,45 @@ public class ProductControllerV1 {
 
         return ResponseEntity.ok(response);
     }
+
+    @PutMapping("/add")
+    @PreAuthorize("hasAuthority(SCOPE_ADMIN)")
+    public ResponseEntity<Void> addProduct(@RequestBody ProductRequest request) {
+        Long id = productService.addProduct(
+                request.name(),
+                request.description(),
+                request.price(),
+                request.stock(),
+                request.categoryId()
+                ).getId();
+
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri()
+                .path("/{id}").buildAndExpand(id).toUri();
+
+        return ResponseEntity.created(uri).build();
+    }
+
+    @PostMapping("/update/{productId}")
+    @PreAuthorize("hasAuthority(SCOPE_ADMIN)")
+    public ResponseEntity<Void> updateProduct(@RequestBody ProductRequest request, @RequestParam Long productId) {
+        productService.updateProduct(
+                productId,
+                request.name(),
+                request.description(),
+                request.price(),
+                request.stock(),
+                request.categoryId()
+        );
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/delete/{id}")
+    @PreAuthorize("hasAuthority(SCOPE_ADMIN")
+    public ResponseEntity<Void> deleteProduct(@RequestParam Long id) {
+        productService.deleteById(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
 }

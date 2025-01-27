@@ -17,7 +17,7 @@ import java.net.URI;
 @RequestMapping("/v1/address")
 @RequiredArgsConstructor
 @Slf4j
-public class AddressController {
+public class AddressControllerV1 {
     private final AddressService addressService;
 
     @PutMapping("/add")
@@ -25,7 +25,7 @@ public class AddressController {
         Long userId = SecurityUtils.getOwnerID();
         User user = new User(userId);
         Address address = new Address(request.name(), request.address(), request.city(), request.zipCode(), user);
-        Long id = addressService.saveAddress(address);
+        Long id = addressService.addAddress(address);
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri()
                 .path("/{id}").buildAndExpand(id).toUri();
@@ -35,12 +35,7 @@ public class AddressController {
 
     @PostMapping("/update/{id}")
     public ResponseEntity<Void> updateAddress(@RequestBody AddressRequest request, @RequestParam Long addressId) {
-        Address address = addressService.getAddress(addressId);
-        address.setName(request.name());
-        address.setAddress(request.address());
-        address.setZipCode(request.zipCode());;
-
-        Long id = addressService.saveAddress(address);
+        Long id = addressService.updateAddress(addressId, request.name(), request.address(), request.zipCode());
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri()
                 .path("/{id}").buildAndExpand(id).toUri();
