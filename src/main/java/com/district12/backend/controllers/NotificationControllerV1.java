@@ -1,7 +1,10 @@
 package com.district12.backend.controllers;
 
+import com.district12.backend.dtos.OrderResponse;
 import com.district12.backend.entities.Order;
 import com.district12.backend.services.NotificationService;
+import com.district12.backend.services.UserService;
+import com.district12.backend.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +20,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class NotificationControllerV1 {
 
     private final NotificationService notificationService;
+    private final UserService userService;
 
-    // PUT /notification/order/complete/101
+    // PUT /notification/order/complete/1
     @PutMapping("/order/complete/{orderId}")
-    public ResponseEntity<Order> shipOneReadyOrderForAdmin(@PathVariable Long orderId) {
-        Order completedOrder = notificationService.completeOrder(orderId);
-        return ResponseEntity.ok(completedOrder);
+    public ResponseEntity<OrderResponse> shipOneReadyOrderForAdmin(@PathVariable Long orderId) {
+        userService.verifyAdminRoleById(SecurityUtils.getOwnerID());
+        OrderResponse completedOrderResponse = notificationService.completeOrder(orderId);
+        return ResponseEntity.ok(completedOrderResponse);
     }
 
 }

@@ -33,14 +33,20 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private PaymentMethod paymentMethod;
+//    @Column(nullable = false)
+//    @Enumerated(EnumType.STRING)
+//    private PaymentMethod paymentMethod;
 
-    public Order(User user, OrderStatus status, PaymentMethod paymentMethod) {
+//    public Order(User user, OrderStatus status, PaymentMethod paymentMethod) {
+//        this.user = user;
+//        this.timestamp = ZonedDateTime.now();
+//        this.status = status;
+//        this.paymentMethod = paymentMethod;
+//    }
+
+    public Order(User user, OrderStatus status) {
         this.user = user;
         this.timestamp = ZonedDateTime.now();
         this.status = status;
-        this.paymentMethod = paymentMethod;
     }
 }
