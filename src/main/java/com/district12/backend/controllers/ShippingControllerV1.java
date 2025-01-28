@@ -18,7 +18,6 @@ import java.util.List;
 public class ShippingControllerV1 {
 
     private final ShippingService shippingService;
-    private final UserService userService;
 
     // GET ship/get/ready-orders
     @GetMapping("/get/ready-orders")

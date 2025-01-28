@@ -9,7 +9,7 @@ services:
       - POSTGRES_PASSWORD=district12
       - POSTGRES_DB=district12
     ports:
-      - "5432:5432"
+      - "3306:5432"
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U district12" ]
       interval: 5s
@@ -18,19 +18,19 @@ services:
     networks:
       - ecommerce_network
 
-  redis:
-    image: redis/redis-stack:latest
-    container_name: redis-stack
-    ports:
-      - "6379:6379"
-      - "8001:8001"
-    healthcheck:
-      test: [ "CMD", "redis-cli", "ping" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - ecommerce_network
+#  redis:
+#    image: redis/redis-stack:latest
+#    container_name: redis-stack
+#    ports:
+#      - "6379:6379"
+#      - "8001:8001"
+#    healthcheck:
+#      test: [ "CMD", "redis-cli", "ping" ]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+#    networks:
+#      - ecommerce_network
 
 #  backend:
 #    depends_on:

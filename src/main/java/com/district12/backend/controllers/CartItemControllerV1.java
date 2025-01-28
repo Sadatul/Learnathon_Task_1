@@ -29,14 +29,14 @@ public class CartItemControllerV1 {
     private final ProductService productService;
     private final UserService userService;
 
-    // GET /items/user/101
+    // GET /cart/items/user/101
     @GetMapping("/items")
     public ResponseEntity<List<CartItemResponse>> getCartItems() {
         List<CartItemResponse> cartItems = cartItemService.getCartItemsForUser(SecurityUtils.getOwnerID());
         return ResponseEntity.ok(cartItems);
     }
 
-    // POST /item/add
+    // POST /cart/item/add
     @PostMapping(path = "/items")
     public ResponseEntity<Object> createCartItemForUser(
             @Valid @RequestBody CartItemRequest cartItemRequest) {
@@ -52,7 +52,7 @@ public class CartItemControllerV1 {
 
     }
 
-    // PUT /item/quantity/2
+    // PUT /cart/item/quantity/2
     @PatchMapping(path = "/items/{cartItemId}/quantity")
     public ResponseEntity<Object> updateCartItemQuantityForUser(
             @PathVariable Long cartItemId,
@@ -66,7 +66,7 @@ public class CartItemControllerV1 {
 
     }
 
-    // DELETE /item/delete/2
+    // DELETE /cart/item/delete/2
     @DeleteMapping(path = "/items/{cartItemId}")
     public ResponseEntity<Void> deleteCartItemForUser(
             @PathVariable Long cartItemId) {
