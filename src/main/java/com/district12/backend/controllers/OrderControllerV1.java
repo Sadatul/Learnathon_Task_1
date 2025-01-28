@@ -4,7 +4,7 @@ import com.district12.backend.dtos.CartItemResponse;
 import com.district12.backend.dtos.OrderDetailsResponse;
 import com.district12.backend.dtos.OrderResponse;
 import com.district12.backend.entities.Order;
-import com.district12.backend.services.CartItemService;
+import com.district12.backend.services.abstractions.CartItemService;
 import com.district12.backend.services.OrderService;
 import com.district12.backend.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
