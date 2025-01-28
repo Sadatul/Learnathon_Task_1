@@ -11,11 +11,14 @@ import java.util.List;
 public interface CartItemService {
 
     List<CartItemResponse> getCartItemsForUser(Long userId);
-    CartItemResponse addCartItem(User user, Product product, Integer quantity);
-    CartItemResponse updateCartItemQuantity(Long userId, Long cartItemId, Integer quantity);
+    CartItemResponse addCartItem(
+            User user, Product product, Integer quantity);
+    CartItemResponse updateCartItemQuantity(
+            Long userId, Long cartItemId, Integer quantity);
     void deleteCartItem(Long userId, Long cartItemId);
     List<CartItemResponse> getCartItemsByOrderId(Long orderId);
-    void doAllCartItemsBelongToUser(List<Long> cartItemIds, Long userId);
+    void doAllCartItemsBelongToUser(
+            List<Long> cartItemIds, Long userId);
     void isAnyCartItemInAnotherOrder(List<Long> cartItemIds);
     @Transactional
     void updateCartItemsOrderId(List<Long> cartItemIds, Order newOrder);
