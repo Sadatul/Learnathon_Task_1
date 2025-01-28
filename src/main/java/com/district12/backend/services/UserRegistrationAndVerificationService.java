@@ -4,6 +4,7 @@ import com.district12.backend.dtos.RegistrationRequest;
 import com.district12.backend.dtos.UnverifiedUser;
 import com.district12.backend.entities.User;
 import com.district12.backend.repositories.UserVerificationRepository;
+import com.district12.backend.services.abstractions.EmailService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

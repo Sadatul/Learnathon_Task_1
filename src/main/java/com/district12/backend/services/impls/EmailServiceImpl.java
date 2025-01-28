@@ -1,5 +1,6 @@
-package com.district12.backend.services;
+package com.district12.backend.services.impls;
 
+import com.district12.backend.services.abstractions.EmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.SimpleMailMessage;
@@ -8,11 +9,11 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EmailService{
+public class EmailServiceImpl implements EmailService {
     private final JavaMailSender mailSender;
-    private final Logger logger = LoggerFactory.getLogger(EmailService.class);
+    private final Logger logger = LoggerFactory.getLogger(EmailServiceImpl.class);
 
-    public EmailService(JavaMailSender mailSender) {
+    public EmailServiceImpl(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
 
