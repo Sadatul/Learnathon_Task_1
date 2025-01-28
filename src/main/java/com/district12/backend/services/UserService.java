@@ -17,9 +17,9 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserVerificationRepository userVerificationRepository;
 
-    public void saveUser(User user) {
+    public User saveUser(User user) {
         userVerificationRepository.deleteUserVerInfoByEmail(user.getEmail());
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     public User getUserById(Long userId) {

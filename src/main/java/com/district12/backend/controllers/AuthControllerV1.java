@@ -20,6 +20,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/v1/auth")
@@ -60,15 +63,27 @@ public class AuthControllerV1 {
             log.error("Error occurred while sending email: {}", e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error occurred while caching user details");
         }
-        return ResponseEntity.ok().build();
+        return ResponseEntity.accepted().build();
     }
 
     @PostMapping("/verify")
     public ResponseEntity<Void> verifyOpt(@Valid @RequestBody UserVerificationRequest request) throws JsonProcessingException {
         User user = userRegVerService.verifyUser(request.email(), request.otp());
-        userService.saveUser(user);
-        return ResponseEntity.ok().build();
+        User savedUser = userService.saveUser(user);
+        try {
+            Class<UserControllerV1> controller = UserControllerV1.class;
+            URI location = MvcUriComponentsBuilder.fromMethod(controller,
+                            controller.getMethod("getUserPersonalDetails"))
+                    .buildAndExpand(savedUser.getId()).toUri();
+            return ResponseEntity.created(location).build();
+        }
+        catch (NoSuchMethodException e){
+            log.error("Error occurred while creating location URI: {}", e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error occurred while creating location URI");
+        }
     }
+
+
 
     @GetMapping("/refresh")
     public ResponseEntity<JwtTokenResponse> refreshToken(@RequestParam String refreshToken){
