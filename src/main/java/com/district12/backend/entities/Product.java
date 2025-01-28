@@ -1,5 +1,6 @@
 package com.district12.backend.entities;
 
+import com.district12.backend.dtos.BaseSortCategory;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -42,7 +43,7 @@ public class Product {
 
     @RequiredArgsConstructor
     @Getter
-    public enum SortCategory {
+    public enum SortCategory implements BaseSortCategory {
         PRICE("price"),
         STOCK("stock"),
         NAME("name");

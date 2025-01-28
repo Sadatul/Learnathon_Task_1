@@ -1,11 +1,9 @@
 package com.district12.backend.controllers;
 
-import com.district12.backend.dtos.CategoryResponse;
-import com.district12.backend.dtos.ProductFilterRequestBody;
-import com.district12.backend.dtos.ProductRequest;
-import com.district12.backend.dtos.ProductResponse;
+import com.district12.backend.dtos.*;
 import com.district12.backend.entities.Product;
 import com.district12.backend.services.ProductService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
@@ -15,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import com.district12.backend.entities.Product.SortCategory;
 
 import java.net.URI;
 import java.util.List;
@@ -30,12 +27,10 @@ public class ProductControllerV1 {
     @GetMapping
     public ResponseEntity<PagedModel<ProductResponse>> getAllProducts(
             ProductFilterRequestBody filterRequestBody,
-            @RequestParam(required = false, defaultValue = "0") Integer page,
-            @RequestParam(required = false, defaultValue = "10") Integer size,
-            @RequestParam(required = false, defaultValue = "NAME") SortCategory sort,
-            @RequestParam(required = false, defaultValue = "ASC") Sort.Direction direction
+            @Valid PaginationRequest paginationRequest,
+            @RequestParam(required = false, defaultValue = "NAME") Product.SortCategory sort
             ) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sort.getValue()));
+        Pageable pageable = paginationRequest.getPageable(sort);
         Specification<Product> specification = productService.getProductFilterSpecification(
                 filterRequestBody.priceStart(), filterRequestBody.priceEnd(),
                 filterRequestBody.inStock(), filterRequestBody.categoryId());
