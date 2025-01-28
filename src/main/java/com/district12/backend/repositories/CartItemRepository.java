@@ -47,5 +47,4 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
     @Query("UPDATE CartItem ci SET ci.order = :newOrder WHERE ci.id IN :cartItemIds")
     void updateOrderForCartItems(@Param("newOrder") Order newOrder, @Param("cartItemIds") List<Long> cartItemIds);
 
-
 }
