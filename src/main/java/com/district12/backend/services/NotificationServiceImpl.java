@@ -2,16 +2,18 @@ package com.district12.backend.services;
 
 import com.district12.backend.dtos.OrderResponse;
 import com.district12.backend.repositories.OrderRepository;
+import com.district12.backend.services.abstractions.NotificationService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class NotificationService {
+public class NotificationServiceImpl implements NotificationService {
 
     private final OrderRepository orderRepository;
 
+    @Override
     @Transactional
     public OrderResponse completeOrder(Long orderId) {
         int numberOfCompletedOrder = orderRepository.completeOrder(orderId);
@@ -19,6 +21,5 @@ public class NotificationService {
             throw new RuntimeException("Order was not completed");
         return orderRepository.getOrderResponseById(orderId);
     }
-
 
 }
