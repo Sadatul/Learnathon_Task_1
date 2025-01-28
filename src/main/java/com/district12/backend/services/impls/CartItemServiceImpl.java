@@ -1,4 +1,4 @@
-package com.district12.backend.services;
+package com.district12.backend.services.impls;
 
 import com.district12.backend.dtos.CartItemResponse;
 import com.district12.backend.entities.CartItem;
@@ -6,6 +6,7 @@ import com.district12.backend.entities.Order;
 import com.district12.backend.entities.Product;
 import com.district12.backend.entities.User;
 import com.district12.backend.repositories.CartItemRepository;
+import com.district12.backend.services.abstractions.CartItemService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,14 +17,16 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class CartItemService {
+public class CartItemServiceImpl implements CartItemService {
 
     private final CartItemRepository cartItemRepository;
 
+    @Override
     public List<CartItemResponse> getCartItemsForUser(Long userId) {
         return cartItemRepository.findCartItemsByUserId(userId);
     }
 
+    @Override
     public CartItemResponse addCartItem(User user, Product product, Integer quantity) {
         CartItem savedCartItem = cartItemRepository.findByUserIdAndProduct(user.getId(), product)
                 .map(existingCartItem -> increaseCartItemQuantity(existingCartItem, quantity))
@@ -46,6 +49,7 @@ public class CartItemService {
         return cartItemRepository.save(cartItem);
     }
 
+    @Override
     public CartItemResponse updateCartItemQuantity(Long userId, Long cartItemId, Integer quantity) {
         String errorMessage = "User is not authorized to update this cart item";
         CartItem existingCartItem = verifyCartItemAndUserId(userId, cartItemId, errorMessage);
@@ -60,6 +64,7 @@ public class CartItemService {
         );
     }
 
+    @Override
     public void deleteCartItem(Long userId, Long cartItemId) {
         String errorMessage = "User is not authorized to delete this cart item";
         CartItem existingCartItem = verifyCartItemAndUserId(userId, cartItemId, errorMessage);
@@ -67,10 +72,12 @@ public class CartItemService {
         cartItemRepository.delete(existingCartItem);
     }
 
+    @Override
     public List<CartItemResponse> getCartItemsByOrderId(Long orderId) {
         return cartItemRepository.findCartItemsByOrderId(orderId);
     }
 
+    @Override
     public void doAllCartItemsBelongToUser(List<Long> cartItemIds, Long userId) {
         boolean allBelongToUser = cartItemRepository.doAllCartItemsBelongToUser(
                 cartItemIds.size(), cartItemIds, userId);
@@ -78,12 +85,14 @@ public class CartItemService {
             throw new IllegalArgumentException("One or more cart item(s) do not belong to the user associated with the order.");
     }
 
+    @Override
     public void isAnyCartItemInAnotherOrder(List<Long> cartItemIds) {
         boolean isInAnotherOrder = cartItemRepository.isAnyCartItemInAnotherOrder(cartItemIds);
         if (isInAnotherOrder)
             throw new IllegalArgumentException("One or more cart item(s) is already in another order.");
     }
 
+    @Override
     @Transactional
     public void updateCartItemsOrderId(List<Long> cartItemIds, Order newOrder) {
         cartItemRepository.updateOrderForCartItems(newOrder, cartItemIds);
@@ -100,5 +109,4 @@ public class CartItemService {
 
         return existingCartItem;
     }
-
 }

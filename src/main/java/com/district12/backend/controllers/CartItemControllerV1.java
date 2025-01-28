@@ -5,7 +5,7 @@ import com.district12.backend.dtos.CartItemResponse;
 import com.district12.backend.dtos.CartItemUpdateRequest;
 import com.district12.backend.entities.Product;
 import com.district12.backend.entities.User;
-import com.district12.backend.services.CartItemService;
+import com.district12.backend.services.abstractions.CartItemService;
 import com.district12.backend.services.ProductService;
 import com.district12.backend.services.UserService;
 import com.district12.backend.utils.SecurityUtils;
