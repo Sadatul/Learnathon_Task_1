@@ -4,7 +4,6 @@ import com.district12.backend.dtos.CartItemResponse;
 import com.district12.backend.entities.Order;
 import com.district12.backend.entities.Product;
 import com.district12.backend.entities.User;
-import jakarta.transaction.Transactional;
 
 import java.util.List;
 
@@ -20,7 +19,6 @@ public interface CartItemService {
     void doAllCartItemsBelongToUser(
             List<Long> cartItemIds, Long userId);
     void isAnyCartItemInAnotherOrder(List<Long> cartItemIds);
-    @Transactional
     void updateCartItemsOrderId(List<Long> cartItemIds, Order newOrder);
 
 }

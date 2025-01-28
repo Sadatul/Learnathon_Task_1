@@ -1,7 +1,8 @@
-package com.district12.backend.services;
+package com.district12.backend.services.impls;
 
 import com.district12.backend.dtos.OrderResponse;
 import com.district12.backend.repositories.OrderRepository;
+import com.district12.backend.services.abstractions.ShippingService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,14 +11,16 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ShippingService {
+public class ShippingServiceImpl implements ShippingService {
 
     private final OrderRepository orderRepository;
 
+    @Override
     public List<OrderResponse> getAllReadyOrdersForAdmin() {
         return orderRepository.getAllReadyOrders();
     }
 
+    @Override
     @Transactional
     public List<OrderResponse> shipAndFetchReadyOrders() {
         int numberOfShippedOrders = orderRepository.shipAllReadyOrders();
@@ -26,6 +29,7 @@ public class ShippingService {
         return orderRepository.getAllShippedOrders();
     }
 
+    @Override
     @Transactional
     public OrderResponse shipAndFetchOneReadyOrderForAdmin(Long orderId) {
         int numberOfShippedOrders = orderRepository.shipOneReadyOrderForAdmin(orderId);
