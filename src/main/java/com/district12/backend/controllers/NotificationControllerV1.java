@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class NotificationControllerV1 {
 
     private final NotificationService notificationService;
-    private final UserService userService;
 
     // PUT /notification/order/complete/1
     @PutMapping("/order/complete/{orderId}")
